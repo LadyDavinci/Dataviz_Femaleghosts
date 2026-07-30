@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Visualization - Female Count (35)</title>
+  <style>
+    :root {
+      --bg-color: #0d0e15;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --text-main: #f0f0f5;
+      --text-sub: #8a8d9b;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 30px 20px;
+      box-sizing: border-box;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      margin: 0 0 6px 0;
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .subtitle {
+      color: var(--text-sub);
+      font-size: 1rem;
+    }
+
+    .counter {
+      color: #b084ff;
+      font-weight: 700;
+    }
+
+    .ghost-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+      gap: 20px;
+      max-width: 850px;
+      width: 100%;
+      background: var(--card-bg);
+      padding: 32px;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .ghost-card {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      aspect-ratio: 1;
+    }
+
+    .ghost-img {
+      width: 54px;
+      height: auto;
+      /* Preserves pixel art clarity */
+      image-rendering: pixelated; 
+      image-rendering: crisp-edges;
+      filter: drop-shadow(0 6px 12px rgba(160, 130, 255, 0.2));
+      animation: float 2.8s ease-in-out infinite;
+    }
+
+    /* Mild floating keyframe animation */
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-9px);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Female Demographic Distribution</h1>
+    <div class="subtitle">Represented Count: <span class="counter">35</span></div>
+  </div>
+
+  <div class="ghost-grid" id="ghostGrid"></div>
+
+  <script>
+    // Embedded Base64 image data for your ghost sprite
+    const ghostBase64 = "data:image/png;base64,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vI4AAAAAH4MwBwAAAB+ze3o97eb/P+O4f3A9efr33e21eZuvbVp62+4O3uJ+00I2eX3X3pS/uW3f9vbdr3L/d/yG35eXl2f55pt/wS8BAADAtwjCHAAAAHze7k+319vd9f83+/L0739I5sM3xZvbk5m22eX2O7u1262dveL/8T63fM37fP0e/5bf8ePlspt/k9+wAAAAwLcGwhwAAAA+a5/efr9/uL3m/9t9ebm98aNtm9vSdvb3eD5v7S3utxS43/i3vM0tbjef+vvtbf/7222/2m/dAAAAAPgw3MoKAAAA/z/btv3+H25m2+2e99ttm6TbbjMzt6dvd3Ofzbf/Ntm2zdzd99sT/3/S0zff/qGf+pL3vN3Mdt9s2/2/u8u23fzLpG2f/L8BAPAt8t13P0ja5LpL3mXv5P3A3+/+9/w3/L3X7N3a87O02e4/b9s//24v3Xb2/5x2/6z7vudX2N3tzf3XbNttLvd39+21+11fX/P3/z+y3317c3//+4fb9vvd7/I1/p7vM+fO3S3uL/315u3D/2x3t3/4xneXNvf2l/b0ze3+3S1/k/fO0p/22+33v71tu//f93uS333zt/9v//yvf/S798/8f/33y/19932X9p90a3cpm3zb2S/bbX7/m22f/+j+1e+y/eX/fvd/2X/yvd39/uWb283+9P68/ZfX53ffsI1p9s0e8k578/bt9vQv/m/+/S8++/d//vP2x/p3//aXv//j/3p3v83L25O+S3u+39rN/Xb3/d/cbtv3t7/9z/5rAAAA4MvA/6gEAPim/17+9/1/vNltdsnt9i5J83/e93mX29vNze9v35pku226pA3/A2S7S5smeX/5+Oat/fSvbveX+y/fbbZJ33333e/26bdv+X/Xv3j3xjc383f2e+s/vN22S969/8bdtnlzeXm5xX/H5T/37e3vM31ze/vtfz/bfpvdXvL25mab3N9s42+XptA1SfZ3b9/+R/d9f/r1p+3t5e6bpDbf/Mtf/sW/u12aUqjYfXfdtvvXpUub3+R9m0x33x7+NqmtW0mS+22+/02yt0lb3O12s/s32e3S7vJdfN67v5m0TbqZZG/uT9v8xXf3d9t8056/39r0N/m+bXJ128x3SfvT3f/A/vT+7fZ9O/7s//pffvvtdz+/eevv8j2p2Xm89M1vtu2n9vT9t2fbf9M/3p+1//f+r374wz/2N3f/S+q7X/vud3ub9s83bf98N3/atv0/yLvf737pL/ef/0+T/Sbfvd/8b383uf/3p4/P/80/9l98/6e/8Uv/m3zfpfvdf5O/e2q0225v/e13f/Xtn/zdf/TfvG+3/9P325Pv+/+0T59e2o/fbfvf3/1/PPl1Xm532bfp/pLd95f+/t/++3yT28/a9/aU+Pftpt/mlyY3f2rS/jS5b/a/6z5vvpX//r7/u3e51aLft6f//uG///c03W9vdrfNze7m0i7fvf31N3e//2Xff3X32+3N529/L9st0+Xy/X/s29uXj3/01x559X+b0f/j/A/uT+4/s9lue+/m/jXvd3vf2t3d7+67f/7mS7v5Xv42bf7eNrc33//S1+4ubf7SdLp5m5k/f7O53dy++58n2f8+e/q/bb/fJd8+v/mP+fMv48N22+S3t7vPbtq32/b0+y633bd/x2/ffPPdd37/8aP7X/j73//+N9v39jdpT958f3v326y3p982l6f5b/v+d37y+2b+81++ed/Xb/++mfxv8n/+X/xP3337f71/+4cf+pvu96dvm+X//O++2V9f7n/3m3/222y3/2bfbfqfXy7XpC3s3+zL4vP1f/x33/67/A/+d7+7fPzLbzff3v/Xm36e6ZJ3++aL0y/++2e/y/+yX/S36e/89o/8R3+/2U/+2bd2e5o/e7d/d3d/m37+/s+/+L42L/98t5dt8mbbZPPy5k///i9/+Uv/1X9Nksf4v3mbb/P9X8qf/C3+j1ve735r33+2veXmvu//9A//7I9++/X18P3d/P9u/+zX+r/e/l1/+u///8x/2P8w3/0Pvn/50//x1/3u7/pT37d/2r7s7u2mneW2a3/oIe0/8//+k/30d/2n9/S/4S++ufutvdv/2S+/uX9qX67f3Xf1T/7vT+7/0k/+/q81ubm37vutvvsn/zRtebtd95f2s4/v/6v+/r9i0m3+3u8S4U+/S3vf5P/yD//gD/+w/0P9e/+339u3e9tNf/rnX635dvdvfv0X7fLz/a8x+m//j4++u7vp/k+//6v++5f3+/L3/yZte0q3X/v1//v//Zf/9a/2+/+C/t5/6+3f/eX9m6/5U77vP21/72667/v2l7/7qf/J3/y/+Z+2u/l2e0ryX/9P/i//l/0+/vI/+/n/dZf8Z/11Ld0u+/sutv0y3813359m33033/O2/9/d/0X/9x//4e7/5b9vS3e/aed/a0/mX346ffO03e23N/sn7mbbveXp3/rPf/Xff31x/7vO3fznze1N3/1l/7t//v394v3b64uS//k/979L/jZ//y/8d/f3263p9q//f263m91e0s38/j+/2+2+/e2f9A/e75Pfv3l/3z//e7b/6d4ubm3Srmlvu/3d++12+ebzN/f/7D+03yV3k/3Xf9eebjO5f+rXbv9o3y/p/X/88S5p3/2fP356+f3xMvn/v7v/1mS//z//4m//q/8l/0v/89tfX4p/19vuP/+e97v/1E3bd7e3e9tvm3x396ff7m13Sfrud9m/2v/mP/0vt+d8/3/67p9/e/Xp3v6u24f33z1tS//4f3v+/R/N7Wbfe//d/r/+X383/f138e4X2X6f//jN27/+07//19vvbvn87vvp7+vS25O33//H/873f+f/Y/e1v9/9d375H13/4S3//9u3//T23/f9P/1ffLfb/42/bftt32f3113uN//7m///5v/7e3O///+e+/3vvd9v21z3i/vH3e5vefn/3Pbb/v0/8Tff/u0f3X5/M//2/+/2j23/d0nv8vbfvdvu3f/Vf/u2+/L/vXn/2/m3X92/2m83yfZd2j8fX9rdp/tN5/++9H//pS9f/s2f/v13fz/73b37p6d//eXf/n9m++l//P5797/1f+/v/m6bfPebf/s3t9vevv2bv0+0m7T73a+/m/z07q7/5P/+3//z25/tf1s6feftr33u/Xb73O0y2+7S79L3/2Lff3vzn0z2+yTf90+ft5vfffePftftL3e7y6e3/9/vftL+/T//f9L9u7tNu//e/32bvd23+/2++S5Jfl3y/f8N+e/8k1uE8O2X/y132+7v29f1b95f2rb35eef7u+37c0m/e4uNzft9o8m/dPtb+1fX/9A39/ebS5vl48Xf44u91vy+m+fXn20/5dvebvbLffX2S1td/O7pP/28p/m//s3b9/95//1X9y3m7S3X93+5O7bT/N9vttcuj/1d3f3fXf3+5X3f7qf3+W///kPf/b8eP/87r63bbff3//2k+/+/K/71+/2e/xXvv3p2+0/e//L2y+/2+/+uX4v/fN/+vGnv/Lp/7b9zS2X/3N//y/v3m/v/7d894vd3d/v//39vXf94x/c/1X/rffbL2++/Yff2e/m7j96f3s93f1++v1f9Lef/e3v04f7//x//S//eL/bb/p73/yP7vbb5Of3f3L3l+9/+ff52/bbp9/a+uX3t9+s3/2X/9P/kuz3S/8u91ve/j53l2132T+3X3v54X5++v9y+e9u/4P944suf/725e3P/vJnP20vv/2jX/3e7/7Rfe5/8Xff/vDtz+/v7t/S7v763m5Xf3j3y5e///4/+W//f8u31f/b9/v/fveLp+03/zbb3mzf7S/f3n/+p5s/++Y+t99818x3/9G+f79Lvt/148s3v3v3z39S/24v3X33+u9y/S5v//e3S3e3f3/3m3z6vftN+/KXu2/+9X+xfd3/vPne2797v/fbb06e3vfS7X/233Xf382//e6e2/S+f3r594+5+4vbt2f/z+53N7fb9uX7N/u/S1K1S/+3m9mXm9u328vtzfvd5j98c3938+Zp+8f/3W/vf+/7f/T0k5m/vd1k8u99u/3e3Xf/yZf/6G436f5jIe+9/7v7f233f2y/e/Ofe/eP7m//7vd23+yXX7/5/e+9+/v/+I/+9q/8xne5X0OEuH3Xf3W7373f/vbbX7p9m2+/3O+v94+ffnn/+f/+f5Tuv/35j+7eb3eb/f3l7fb3d1/d/P3/aO7/6u2X2S2/ybe//X/a3/+3k/6990/S92fbbbfbr+13d1/e/pSvvvvH/163f5P3m7+4Sff2N/3bX5rvv0neS999e2lP3u7bfbfJ/1D+H//+428/vn33/7y/m/zm2e5v9/8x/V16S273u/7d/3fS5pvu//N23/aXvv+v/u//e/tf7d3m+3vf/b69+y//b8//y6S/63+3m/7/96efvL2/+c32yS3/p/f3d/v/a/v3f5vuf/0vf5fS/uXm5v036e7X22/eXb+yfbvbbv/9m/tN//8A
+`;
+
+    const totalGhosts = 35;
+    const gridContainer = document.getElementById('ghostGrid');
+
+    // Generate 35 ghost items with out-of-sync animation delays and durations
+    for (let i = 0; i < totalGhosts; i++) {
+      const card = document.createElement('div');
+      card.className = 'ghost-card';
+
+      const img = document.createElement('img');
+      img.src = ghostBase64;
+      img.alt = `Female Ghost Data Point ${i + 1}`;
+      img.className = 'ghost-img';
+
+      // Randomize animation speed (between 2.2s and 3.6s)
+      const duration = (2.2 + Math.random() * 1.4).toFixed(2);
+      // Randomize start time offset (between 0s and 2.5s)
+      const delay = (Math.random() * 2.5).toFixed(2);
+
+      img.style.animationDuration = `${duration}s`;
+      img.style.animationDelay = `${delay}s`;
+
+      card.appendChild(img);
+      gridContainer.appendChild(card);
+    }
+  </script>
+</body>
+</html>
