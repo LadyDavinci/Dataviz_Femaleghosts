@@ -1,133 +1,662 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Data Visualization - Female Count (35)</title>
-  <style>
-    :root {
-      --bg-color: #0d0e15;
-      --card-bg: rgba(255, 255, 255, 0.03);
-      --border-color: rgba(255, 255, 255, 0.08);
-      --text-main: #f0f0f5;
-      --text-sub: #8a8d9b;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Borrowed Bodies — How Supernatural Horror Genders Its Evil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --bg: #060505;
+  --bg-raised: rgba(18, 14, 13, 0.96);
+  --bone: #F2E8D9;
+  --bone-dim: #C9BBA6;
+  --muted: #8C8478;
+  --hair: rgba(242, 232, 217, 0.12);
+  --hair-strong: rgba(242, 232, 217, 0.18);
+  --crimson: #A83442;
+  --crimson-soft: rgba(168,52,66,0.16);
+  --crimson-text: #E08A93;
+  --slate: #4C6B8A;
+  --slate-soft: rgba(76,107,138,0.14);
+  --slate-text: #8FB2D4;
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans: 'Inter', -apple-system, sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:
+    radial-gradient(circle at 10% 12%, rgba(168,52,66,0.24), transparent 32%),
+    radial-gradient(circle at 90% 0%, rgba(76,107,138,0.2), transparent 30%),
+    linear-gradient(135deg, #060505 0%, #120c0b 45%, #030303 100%);
+  color:var(--bone);
+  font-family:var(--sans);
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  position:relative;
+}
+body::before{
+  content:"";
+  position:fixed; inset:0; z-index:2000; pointer-events:none;
+  opacity:0.045;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+body::after{
+  content:"";
+  position:fixed; inset:0; pointer-events:none;
+  background:radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.28) 100%);
+  mix-blend-mode:screen;
+  opacity:0.65;
+}
+::selection{ background:var(--crimson); color:var(--bone); }
+.wrap{ max-width:960px; margin:0 auto; padding:0 32px; }
+.eyebrow{
+  font-family:var(--mono); font-size:12px; letter-spacing:0.16em; text-transform:uppercase;
+  color:var(--muted);
+}
+h1,h2,h3{ font-family:var(--serif); font-weight:600; letter-spacing:-0.01em; }
+a{ color:inherit; }
 
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 30px 20px;
-      box-sizing: border-box;
-    }
+.hero{
+  min-height:100vh;
+  display:flex; flex-direction:column; justify-content:center;
+  position:relative;
+  padding:120px 32px 80px;
+  overflow:hidden;
+}
+.hero::before,
+.hero::after{
+  content:"";
+  position:absolute; inset:auto; border-radius:50%; filter:blur(80px); opacity:0.22; pointer-events:none;
+  animation:drift 10s ease-in-out infinite alternate;
+}
+.hero::before{ width:300px; height:300px; left:-80px; top:90px; background:rgba(168,52,66,0.36); }
+.hero::after{ width:360px; height:360px; right:-100px; bottom:70px; background:rgba(76,107,138,0.22); animation-duration:13s; }
+.hero-glow{ position:absolute; border-radius:50%; filter:blur(90px); opacity:0.18; pointer-events:none; }
+.hero-glow.glow-a{ width:280px; height:280px; background:rgba(168,52,66,0.26); top:12%; left:8%; }
+.hero-glow.glow-b{ width:320px; height:320px; background:rgba(76,107,138,0.22); bottom:8%; right:6%; }
+@keyframes drift{ from{ transform:translate3d(0,0,0) scale(1);} to{ transform:translate3d(12px,-16px,0) scale(1.06);} }
+.hero-inner{ max-width:900px; margin:0 auto; width:100%; text-align:center; position:relative; z-index:2; }
+.hero .eyebrow{ margin-bottom:22px; }
+.hero h1{
+  font-size:clamp(42px, 7vw, 86px);
+  line-height:0.95;
+  color:var(--bone);
+  text-shadow:0 0 32px rgba(168,52,66,0.18), 0 0 80px rgba(0,0,0,0.4);
+}
+.hero h1 em{ font-style:italic; color:var(--crimson-text); }
+.hero-sub{
+  margin-top:22px;
+  font-size:clamp(16px, 2vw, 20px);
+  color:var(--bone-dim);
+  max-width:660px;
+  margin-left:auto; margin-right:auto;
+  font-weight:400;
+}
+.flip-stage{
+  margin-top:64px;
+  height:120px;
+  display:flex; align-items:center; justify-content:center;
+  gap:18px;
+  font-family:var(--mono);
+  font-size:clamp(14px, 2.2vw, 19px);
+}
+.flip-col{ min-width:0; text-align:right; flex:1; }
+.flip-col.right{ text-align:left; }
+.flip-label{ display:block; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+.flip-word{
+  display:inline-block; white-space:nowrap;
+  transition:opacity .35s ease, filter .35s ease, transform .35s ease;
+}
+.flip-word.lore{ color:var(--slate-text); }
+.flip-word.phys{ color:var(--crimson-text); }
+.flip-arrow{ color:var(--muted); font-size:20px; flex:0 0 auto; }
+.flip-word.fading{ opacity:0; filter:blur(4px); transform:translateY(4px); }
+.scroll-cue{
+  position:absolute; bottom:40px; left:50%; transform:translateX(-50%);
+  font-family:var(--mono); font-size:11px; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--muted);
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  animation:cueFloat 2.2s ease-in-out infinite;
+}
+.scroll-cue .line{ width:1px; height:32px; background:linear-gradient(var(--muted), transparent); }
+@keyframes cueFloat{ 0%,100%{ transform:translate(-50%,0);} 50%{ transform:translate(-50%,6px);} }
 
-    .header {
-      text-align: center;
-      margin-bottom: 28px;
-    }
+section{ padding:110px 0; position:relative; }
+section.tight{ padding:70px 0; }
+.section-head{ max-width:640px; margin-bottom:52px; }
+.section-head .eyebrow{ margin-bottom:16px; }
+.section-head h2{ font-size:clamp(28px, 4vw, 42px); line-height:1.1; }
+.section-head p{ margin-top:16px; color:var(--bone-dim); font-size:17px; max-width:560px; }
+.reveal{ opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s ease; }
+.reveal.in{ opacity:1; transform:translateY(0); }
+.reveal.d1{ transition-delay:.08s; }
+.reveal.d2{ transition-delay:.16s; }
+.reveal.d3{ transition-delay:.24s; }
+hr.rule{ border:none; border-top:1px solid var(--hair); margin:0; }
 
-    h1 {
-      margin: 0 0 6px 0;
-      font-size: 1.8rem;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-    }
+.stat-duel{ display:grid; grid-template-columns:1fr auto 1fr; gap:32px; align-items:center; margin:8px 0 0; }
+.stat-card{
+  background:linear-gradient(145deg, rgba(20,16,14,0.98), rgba(10,8,8,0.95));
+  border:1px solid var(--hair);
+  border-radius:14px; padding:36px 28px; text-align:center;
+  box-shadow:0 18px 54px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.03);
+}
+.stat-card.lore{ border-color:rgba(76,107,138,0.28); }
+.stat-card.phys{ border-color:rgba(168,52,66,0.28); }
+.stat-card .stat-label{ font-family:var(--mono); font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:14px;}
+.stat-num{ font-family:var(--serif); font-size:clamp(48px,7vw,72px); font-weight:700; line-height:1; }
+.stat-card.lore .stat-num{ color:var(--slate-text); }
+.stat-card.phys .stat-num{ color:var(--crimson-text); }
+.stat-card .stat-note{ margin-top:10px; color:var(--bone-dim); font-size:14px; }
+.stat-vs{ font-family:var(--serif); font-style:italic; font-size:22px; color:var(--muted); }
+@media (max-width:680px){ .stat-duel{ grid-template-columns:1fr; } .stat-vs{ display:none; } }
 
-    .subtitle {
-      color: var(--text-sub);
-      font-size: 1rem;
-    }
+.chart-card{
+  background:linear-gradient(145deg, rgba(20,16,14,0.98), rgba(10,8,8,0.95));
+  border:1px solid var(--hair); border-radius:16px;
+  padding:28px 24px 20px;
+  box-shadow:0 22px 60px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.03);
+  position:relative; overflow:hidden;
+}
+.chart-card::before{ content:""; position:absolute; inset:0; border-top:1px solid rgba(255,255,255,0.05); pointer-events:none; }
+.chart-card .card-title{ font-family:var(--sans); font-weight:600; font-size:15px; margin-bottom:2px; }
+.chart-card .card-sub{ color:var(--muted); font-size:13px; margin-bottom:18px; }
+.legend-row{ display:flex; gap:18px; flex-wrap:wrap; margin-bottom:14px; font-size:12px; color:var(--bone-dim); font-family:var(--mono); }
+.legend-dot{ display:inline-block; width:9px; height:9px; border-radius:2px; margin-right:6px; vertical-align:1px; }
+.grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+.grid-3{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+@media (max-width:780px){ .grid-2, .grid-3{ grid-template-columns:1fr; } }
 
-    .counter {
-      color: #b084ff;
-      font-weight: 700;
-    }
+.mech-item{ padding:44px 0; }
+.mech-item + .mech-item{ border-top:1px solid var(--hair); }
+.mech-num{ font-family:var(--mono); font-size:12px; color:var(--muted); letter-spacing:.1em;}
+.mech-item h3{ font-size:26px; margin-top:10px; margin-bottom:14px; }
+.mech-item p{ color:var(--bone-dim); font-size:16px; max-width:560px; margin-bottom:22px; }
 
-    .ghost-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-      gap: 20px;
-      max-width: 850px;
-      width: 100%;
-      background: var(--card-bg);
-      padding: 32px;
-      border-radius: 16px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-    }
+.pull{ font-family:var(--serif); font-style:italic; font-weight:500; font-size:clamp(24px,3.4vw,34px); line-height:1.35; color:var(--bone); text-align:center; max-width:760px; margin:0 auto; }
+.pull .hl-f{ color:var(--crimson-text); font-style:normal; }
+.pull .hl-m{ color:var(--slate-text); font-style:normal; }
 
-    .ghost-card {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      aspect-ratio: 1;
-    }
+.scrubber{ margin-top:22px; }
+.scrubber input[type=range]{ width:100%; -webkit-appearance:none; appearance:none; height:2px; background:var(--hair-strong); outline:none; margin:18px 0 8px; }
+.scrubber input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:16px; height:16px; border-radius:50%; background:var(--crimson); cursor:pointer; border:2px solid var(--bone); }
+.scrubber-ticks{ display:flex; justify-content:space-between; font-family:var(--mono); font-size:11px; color:var(--muted); }
+.decade-readout{ font-family:var(--mono); font-size:13px; color:var(--bone-dim); margin-top:14px; }
+.decade-readout b{ color:var(--bone); font-weight:600; }
+.decade-readout .f{ color:var(--crimson-text); } .decade-readout .m{ color:var(--slate-text); }
 
-    .ghost-img {
-      width: 54px;
-      height: auto;
-      /* Preserves pixel art clarity */
-      image-rendering: pixelated; 
-      image-rendering: crisp-edges;
-      filter: drop-shadow(0 6px 12px rgba(160, 130, 255, 0.2));
-      animation: float 2.8s ease-in-out infinite;
-    }
+.explorer-controls{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+.chip{ font-family:var(--mono); font-size:12px; padding:7px 14px; border-radius:20px; border:1px solid var(--hair-strong); color:var(--bone-dim); background:transparent; cursor:pointer; transition:all .15s; }
+.chip.active{ background:var(--bone); color:var(--bg); border-color:var(--bone); }
+.explorer-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:14px; max-height:640px; overflow-y:auto; padding-right:6px; }
+.movie-card{ background:linear-gradient(145deg, rgba(20,16,14,0.98), rgba(12,10,10,0.95)); border:1px solid var(--hair); border-radius:10px; padding:16px 18px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.03); }
+.movie-card .m-title{ font-weight:600; font-size:14.5px; }
+.movie-card .m-year{ font-family:var(--mono); font-size:11px; color:var(--muted); }
+.movie-card .m-row{ display:flex; justify-content:space-between; font-size:12.5px; margin-top:10px; color:var(--bone-dim); gap:8px;}
+.movie-card .m-row span:last-child{ text-align:right; }
+.tag{ font-family:var(--mono); font-size:10px; padding:2px 7px; border-radius:10px; }
+.tag.f{ background:var(--crimson-soft); color:var(--crimson-text); }
+.tag.m{ background:var(--slate-soft); color:var(--slate-text); }
+.tag.n{ background:var(--hair-strong); color:var(--muted); }
 
-    /* Mild floating keyframe animation */
-    @keyframes float {
-      0%, 100% {
-        transform: translateY(0px);
-      }
-      50% {
-        transform: translateY(-9px);
-      }
-    }
-  </style>
+.case-file{ background:linear-gradient(145deg, rgba(20,16,14,0.98), rgba(10,8,8,0.95)); border:1px dashed var(--hair-strong); border-radius:12px; padding:30px 28px; box-shadow:inset 0 1px 0 rgba(255,255,255,0.03); }
+.case-file .eyebrow{ margin-bottom:14px; }
+.case-file ul{ list-style:none; }
+.case-file li{ position:relative; padding-left:20px; margin-bottom:12px; color:var(--bone-dim); font-size:15px; }
+.case-file li::before{ content:"—"; position:absolute; left:0; color:var(--muted); }
+
+.closer{ text-align:center; padding:140px 0 120px; }
+.closer h2{ font-size:clamp(30px,5vw,54px); line-height:1.15; max-width:800px; margin:0 auto; }
+.closer .eyebrow{ margin-bottom:22px; justify-content:center; }
+.footer{ padding:40px 0 60px; text-align:center; color:var(--muted); font-family:var(--mono); font-size:12px; }
+@media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
+</style>
 </head>
 <body>
 
-  <div class="header">
-    <h1>Female Demographic Distribution</h1>
-    <div class="subtitle">Represented Count: <span class="counter">35</span></div>
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="hero-glow glow-a"></div>
+  <div class="hero-glow glow-b"></div>
+  <div class="hero-inner">
+    <div class="eyebrow">100 supernatural horror films · 1976–2026</div>
+    <h1>Borrowed<br><em>bodies</em></h1>
+    <p class="hero-sub">The thing haunting you was rarely born female. The body it wears almost always is. A data study of who authors evil in supernatural horror — and who's just left holding it.</p>
+
+    <div class="flip-stage" id="flipStage">
+      <div class="flip-col">
+        <span class="flip-label">In the lore, it's</span>
+        <span class="flip-word lore" id="flipLore">King&nbsp;Paimon</span>
+      </div>
+      <div class="flip-arrow">→</div>
+      <div class="flip-col right">
+        <span class="flip-label">On screen, it's</span>
+        <span class="flip-word phys" id="flipPhys">Annie&nbsp;Graham</span>
+      </div>
+    </div>
   </div>
+  <div class="scroll-cue"><div class="line"></div>scroll</div>
+</section>
 
-  <div class="ghost-grid" id="ghostGrid"></div>
+<!-- ================= THE REVERSAL ================= -->
+<section class="tight">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Finding 01 — the reversal</div>
+      <h2>The author and the face are two different genders.</h2>
+      <p>Across a century's worth of possession stories, curses, and hauntings, the entity people <em style="font-family:var(--serif);font-style:italic;">imagine</em> — the thing named in the film's own mythology — skews male. The body the audience actually watches scream, crawl, and kill skews female.</p>
+    </div>
 
-  <script>
-    // Embedded Base64 image data for your ghost sprite
-    const ghostBase64 = "data:image/png;base64,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vI4AAAAAH4MwBwAAAB+ze3o97eb/P+O4f3A9efr33e21eZuvbVp62+4O3uJ+00I2eX3X3pS/uW3f9vbdr3L/d/yG35eXl2f55pt/wS8BAADAtwjCHAAAAHze7k+319vd9f83+/L0739I5sM3xZvbk5m22eX2O7u1262dveL/8T63fM37fP0e/5bf8ePlspt/k9+wAAAAwLcGwhwAAAA+a5/efr9/uL3m/9t9ebm98aNtm9vSdvb3eD5v7S3utxS43/i3vM0tbjef+vvtbf/7222/2m/dAAAAAPgw3MoKAAAA/z/btv3+H25m2+2e99ttm6TbbjMzt6dvd3Ofzbf/Ntm2zdzd99sT/3/S0zff/qGf+pL3vN3Mdt9s2/2/u8u23fzLpG2f/L8BAPAt8t13P0ja5LpL3mXv5P3A3+/+9/w3/L3X7N3a87O02e4/b9s//24v3Xb2/5x2/6z7vudX2N3tzf3XbNttLvd39+21+11fX/P3/z+y3317c3//+4fb9vvd7/I1/p7vM+fO3S3uL/315u3D/2x3t3/4xneXNvf2l/b0ze3+3S1/k/fO0p/22+33v71tu//f93uS333zt/9v//yvf/S798/8f/33y/19932X9p90a3cpm3zb2S/bbX7/m22f/+j+1e+y/eX/fvd/2X/yvd39/uWb283+9P68/ZfX53ffsI1p9s0e8k578/bt9vQv/m/+/S8++/d//vP2x/p3//aXv//j/3p3v83L25O+S3u+39rN/Xb3/d/cbtv3t7/9z/5rAAAA4MvA/6gEAPim/17+9/1/vNltdsnt9i5J83/e93mX29vNze9v35pku226pA3/A2S7S5smeX/5+Oat/fSvbveX+y/fbbZJ33333e/26bdv+X/Xv3j3xjc383f2e+s/vN22S969/8bdtnlzeXm5xX/H5T/37e3vM31ze/vtfz/bfpvdXvL25mab3N9s42+XptA1SfZ3b9/+R/d9f/r1p+3t5e6bpDbf/Mtf/sW/u12aUqjYfXfdtvvXpUub3+R9m0x33x7+NqmtW0mS+22+/02yt0lb3O12s/s32e3S7vJdfN67v5m0TbqZZG/uT9v8xXf3d9t8056/39r0N/m+bXJ128x3SfvT3f/A/vT+7fZ9O/7s//pffvvtdz+/eevv8j2p2Xm89M1vtu2n9vT9t2fbf9M/3p+1//f+r374wz/2N3f/S+q7X/vud3ub9s83bf98N3/atv0/yLvf737pL/ef/0+T/Sbfvd/8b383uf/3p4/P/80/9l98/6e/8Uv/m3zfpfvdf5O/e2q0225v/e13f/Xtn/zdf/TfvG+3/9P325Pv+/+0T59e2o/fbfvf3/1/PPl1Xm532bfp/pLd95f+/t/++3yT28/a9/aU+Pftpt/mlyY3f2rS/jS5b/a/6z5vvpX//r7/u3e51aLft6f//uG///c03W9vdrfNze7m0i7fvf31N3e//2Xff3X32+3N529/L9st0+Xy/X/s29uXj3/01x559X+b0f/j/A/uT+4/s9lue+/m/jXvd3vf2t3d7+67f/7mS7v5Xv42bf7eNrc33//S1+4ubf7SdLp5m5k/f7O53dy++58n2f8+e/q/bb/fJd8+v/mP+fMv48N22+S3t7vPbtq32/b0+y633bd/x2/ffPPdd37/8aP7X/j73//+N9v39jdpT958f3v326y3p982l6f5b/v+d37y+2b+81++ed/Xb/++mfxv8n/+X/xP3337f71/+4cf+pvu96dvm+X//O++2V9f7n/3m3/222y3/2bfbfqfXy7XpC3s3+zL4vP1f/x33/67/A/+d7+7fPzLbzff3v/Xm36e6ZJ3++aL0y/++2e/y/+yX/S36e/89o/8R3+/2U/+2bd2e5o/e7d/d3d/m37+/s+/+L42L/98t5dt8mbbZPPy5k///i9/+Uv/1X9Nksf4v3mbb/P9X8qf/C3+j1ve735r33+2veXmvu//9A//7I9++/X18P3d/P9u/+zX+r/e/l1/+u///8x/2P8w3/0Pvn/50//x1/3u7/pT37d/2r7s7u2mneW2a3/oIe0/8//+k/30d/2n9/S/4S++ufutvdv/2S+/uX9qX67f3Xf1T/7vT+7/0k/+/q81ubm37vutvvsn/zRtebtd95f2s4/v/6v+/r9i0m3+3u8S4U+/S3vf5P/yD//gD/+w/0P9e/+339u3e9tNf/rnX635dvdvfv0X7fLz/a8x+m//j4++u7vp/k+//6v++5f3+/L3/yZte0q3X/v1//v//Zf/9a/2+/+C/t5/6+3f/eX9m6/5U77vP21/72667/v2l7/7qf/J3/y/+Z+2u/l2e0ryX/9P/i//l/0+/vI/+/n/dZf8Z/11Ld0u+/sutv0y3813359m33033/O2/9/d/0X/9x//4e7/5b9vS3e/aed/a0/mX346ffO03e23N/sn7mbbveXp3/rPf/Xff31x/7vO3fznze1N3/1l/7t//v394v3b64uS//k/979L/jZ//y/8d/f3263p9q//f263m91e0s38/j+/2+2+/e2f9A/e75Pfv3l/3z//e7b/6d4ubm3Srmlvu/3d++12+ebzN/f/7D+03yV3k/3Xf9eebjO5f+rXbv9o3y/p/X/88S5p3/2fP356+f3xMvn/v7v/1mS//z//4m//q/8l/0v/89tfX4p/19vuP/+e97v/1E3bd7e3e9tvm3x396ff7m13Sfrud9m/2v/mP/0vt+d8/3/67p9/e/Xp3v6u24f33z1tS//4f3v+/R/N7Wbfe//d/r/+X383/f138e4X2X6f//jN27/+07//19vvbvn87vvp7+vS25O33//H/873f+f/Y/e1v9/9d375H13/4S3//9u3//T23/f9P/1ffLfb/42/bftt32f3113uN//7m///5v/7e3O///+e+/3vvd9v21z3i/vH3e5vefn/3Pbb/v0/8Tff/u0f3X5/M//2/+/2j23/d0nv8vbfvdvu3f/Vf/u2+/L/vXn/2/m3X92/2m83yfZd2j8fX9rdp/tN5/++9H//pS9f/s2f/v13fz/73b37p6d//eXf/n9m++l//P5797/1f+/v/m6bfPebf/s3t9vevv2bv0+0m7T73a+/m/z07q7/5P/+3//z25/tf1s6feftr33u/Xb73O0y2+7S79L3/2Lff3vzn0z2+yTf90+ft5vfffePftftL3e7y6e3/9/vftL+/T//f9L9u7tNu//e/32bvd23+/2++S5Jfl3y/f8N+e/8k1uE8O2X/y132+7v29f1b95f2rb35eef7u+37c0m/e4uNzft9o8m/dPtb+1fX/9A39/ebS5vl48Xf44u91vy+m+fXn20/5dvebvbLffX2S1td/O7pP/28p/m//s3b9/95//1X9y3m7S3X93+5O7bT/N9vttcuj/1d3f3fXf3+5X3f7qf3+W///kPf/b8eP/87r63bbff3//2k+/+/K/71+/2e/xXvv3p2+0/e//L2y+/2+/+uX4v/fN/+vGnv/Lp/7b9zS2X/3N//y/v3m/v/7d894vd3d/v//39vXf94x/c/1X/rffbL2++/Yff2e/m7j96f3s93f1++v1f9Lef/e3v04f7//x//S//eL/bb/p73/yP7vbb5Of3f3L3l+9/+ff52/bbp9/a+uX3t9+s3/2X/9P/kuz3S/8u91ve/j53l2132T+3X3v54X5++v9y+e9u/4P944suf/725e3P/vJnP20vv/2jX/3e7/7Rfe5/8Xff/vDtz+/v7t/S7v763m5Xf3j3y5e///4/+W//f8u31f/b9/v/fveLp+03/zbb3mzf7S/f3n/+p5s/++Y+t99818x3/9G+f79Lvt/148s3v3v3z39S/24v3X33+u9y/S5v//e3S3e3f3/3m3z6vftN+/KXu2/+9X+xfd3/vPne2797v/fbb06e3vfS7X/233Xf382//e6e2/S+f3r594+5+4vbt2f/z+53N7fb9uX7N/u/S1K1S/+3m9mXm9u328vtzfvd5j98c3938+Zp+8f/3W/vf+/7f/T0k5m/vd1k8u99u/3e3Xf/yZf/6G436f5jIe+9/7v7f233f2y/e/Ofe/eP7m//7vd23+yXX7/5/e+9+/v/+I/+9q/8xne5X0OEuH3Xf3W7373f/vbbX7p9m2+/3O+v94+ffnn/+f/+f5Tuv/35j+7eb3eb/f3l7fb3d1/d/P3/aO7/6u2X2S2/ybe//X/a3/+3k/6990/S92fbbbfbr+13d1/e/pSvvvvH/163f5P3m7+4Sff2N/3bX5rvv0neS999e2lP3u7bfbfJ/1D+H//+428/vn33/7y/m/zm2e5v9/8x/V16S273u/7d/3fS5pvu//N23/aXvv+v/u//e/tf7d3m+3vf/b69+y//b8//y6S/63+3m/7/96efvL2/+c32yS3/p/f3d/v/a/v3f5vuf/0vf5fS/uXm5v036e7X22/eXb+yfbvbbv/9m/tN//8A
-`;
+    <div class="stat-duel reveal d1">
+      <div class="stat-card lore">
+        <div class="stat-label">Lore-based antagonist</div>
+        <div class="stat-num" data-count="45">0</div>
+        <div class="stat-note">films where the canonical entity is male — vs. 32 female</div>
+      </div>
+      <div class="stat-vs">is not</div>
+      <div class="stat-card phys">
+        <div class="stat-label">Physical antagonist</div>
+        <div class="stat-num" data-count="51">0</div>
+        <div class="stat-note">films where the body on screen is female — vs. 32 male</div>
+      </div>
+    </div>
 
-    const totalGhosts = 35;
-    const gridContainer = document.getElementById('ghostGrid');
+    <div class="chart-card reveal d2" style="margin-top:36px;">
+      <div class="card-title">Who gets named vs. who gets shown</div>
+      <div class="card-sub">Every antagonist across all 100 films, coded by gender in the lore versus in physical representation.</div>
+      <div class="legend-row">
+        <span><span class="legend-dot" style="background:#4C6B8A"></span>Male</span>
+        <span><span class="legend-dot" style="background:#A83442"></span>Female</span>
+        <span><span class="legend-dot" style="background:#8C8478"></span>Both / neutral / demonic</span>
+      </div>
+      <div style="position:relative; height:260px;">
+        <canvas id="chartReversal" role="img" aria-label="Bar chart comparing lore-based and physical antagonist gender counts across 100 films. Lore: 45 male, 32 female, 23 both or neutral. Physical: 32 male, 51 female, 17 both or neutral."></canvas>
+      </div>
+    </div>
+  </div>
+</section>
 
-    // Generate 35 ghost items with out-of-sync animation delays and durations
-    for (let i = 0; i < totalGhosts; i++) {
-      const card = document.createElement('div');
-      card.className = 'ghost-card';
+<hr class="rule">
 
-      const img = document.createElement('img');
-      img.src = ghostBase64;
-      img.alt = `Female Ghost Data Point ${i + 1}`;
-      img.className = 'ghost-img';
+<!-- ================= MECHANISM ================= -->
+<section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Finding 02 — how she's made scary</div>
+      <h2>Three ways the vessel is built differently than the author.</h2>
+      <p>If the body doing the killing is more often female, what does the writing give her to work with? Three patterns hold consistently across the sample.</p>
+    </div>
 
-      // Randomize animation speed (between 2.2s and 3.6s)
-      const duration = (2.2 + Math.random() * 1.4).toFixed(2);
-      // Randomize start time offset (between 0s and 2.5s)
-      const delay = (Math.random() * 2.5).toFixed(2);
+    <!-- MECH 1: weapon -->
+    <div class="mech-item reveal">
+      <div class="mech-num">01 / 03</div>
+      <h3>She doesn't carry a weapon. He does.</h3>
+      <p>Only 1 of 51 female antagonists has a signature weapon. Nearly half of male antagonists do. When the threat is female, the body itself is treated as the instrument — no blade required.</p>
+      <div class="chart-card">
+        <div class="card-sub" style="margin-bottom:14px;">Share of antagonists with a fixed, signature weapon</div>
+        <div style="position:relative; height:150px;">
+          <canvas id="chartWeapon" role="img" aria-label="Horizontal bar chart: 2 percent of female antagonists carry a permanent weapon, versus 50 percent of male antagonists."></canvas>
+        </div>
+      </div>
+    </div>
 
-      img.style.animationDuration = `${duration}s`;
-      img.style.animationDelay = `${delay}s`;
+    <!-- MECH 2: age -->
+    <div class="mech-item reveal">
+      <div class="mech-num">02 / 03</div>
+      <h3>She's younger. He's older.</h3>
+      <p>Median apparent age: 25 for female antagonists, 38 for male. A third of female antagonists read as under 20 — roughly double the rate for male ones. The vessel skews toward less power in the story it's trapped inside.</p>
+      <div class="chart-card">
+        <div class="card-sub" style="margin-bottom:14px;">Apparent / canonical age of every antagonist (capped at 120 yrs — a few immortal entities run into the thousands)</div>
+        <div style="position:relative; height:260px;">
+          <canvas id="chartAge" role="img" aria-label="Scatter plot of antagonist age by gender, showing female antagonists clustered younger with a median of 25 years versus a median of 38 years for male antagonists."></canvas>
+        </div>
+      </div>
+    </div>
 
-      card.appendChild(img);
-      gridContainer.appendChild(card);
+    <!-- MECH 3: agency -->
+    <div class="mech-item reveal">
+      <div class="mech-num">03 / 03</div>
+      <h3>Nearly half the time, she isn't even herself.</h3>
+      <p>This is the sharpest gap. I coded every physical antagonist by whether the original person would actually do what's on screen — or whether an outside force has overridden them. <strong style="color:var(--bone); font-weight:600;">47% of female antagonists are possessed, inhabited, or otherwise not themselves</strong> — versus 22% of male antagonists, who are far more often just being who they are.</p>
+      <div class="chart-card">
+        <div class="card-sub" style="margin-bottom:14px;">Acting as themselves vs. overridden by something else</div>
+        <div class="legend-row">
+          <span><span class="legend-dot" style="background:#8FB2D4"></span>Acting as self</span>
+          <span><span class="legend-dot" style="background:#E08A93"></span>Overridden / possessed</span>
+        </div>
+        <div style="position:relative; height:150px;">
+          <canvas id="chartAgency" role="img" aria-label="Stacked horizontal bar chart. Female antagonists: 27 acting as themselves, 24 overridden or possessed. Male antagonists: 25 acting as themselves, 7 overridden or possessed."></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PULL QUOTE ================= -->
+<section class="tight">
+  <div class="wrap reveal">
+    <p class="pull">Male horror is <span class="hl-m">authored</span>. Female horror is <span class="hl-f">inhabited</span>.</p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ================= TREND OVER TIME ================= -->
+<section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Finding 03 — the trend line</div>
+      <h2>The gap has widened for fifty years — with one honest exception.</h2>
+      <p>Drag the scrubber through five decades of supernatural horror. Watch the '80s dip: this is the one stretch where male-authored icons — Chucky, Pinhead, Candyman, Dracula — briefly closed the gap.</p>
+    </div>
+
+    <div class="chart-card reveal d1">
+      <div class="legend-row">
+        <span><span class="legend-dot" style="background:#4C6B8A"></span>Female-inclusive share, lore</span>
+        <span><span class="legend-dot" style="background:#A83442"></span>Female-inclusive share, physical</span>
+      </div>
+      <div style="position:relative; height:280px;">
+        <canvas id="chartTrend" role="img" aria-label="Line chart of female-inclusive antagonist share by decade, lore versus physical, from 1976 to 2026. Physical share rises from 55 to 100 percent with a dip to 30 percent in 1986 to 1995."></canvas>
+      </div>
+      <div class="scrubber">
+        <input type="range" id="decadeSlider" min="0" max="4" value="4" step="1">
+        <div class="scrubber-ticks"><span>1976</span><span>1986</span><span>1996</span><span>2006</span><span>2016</span></div>
+        <div class="decade-readout" id="decadeReadout"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ================= EXPLORER ================= -->
+<section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">The data — explore it yourself</div>
+      <h2>All 100 films.</h2>
+      <p>Filter by physical antagonist gender, or by whether the body on screen was acting as itself. Every claim above is built from these rows.</p>
+    </div>
+
+    <div class="reveal d1">
+      <div class="explorer-controls" id="genderChips">
+        <button class="chip active" data-g="all">All</button>
+        <button class="chip" data-g="Female">Female</button>
+        <button class="chip" data-g="Male">Male</button>
+        <button class="chip" data-g="Both">Both</button>
+      </div>
+      <div class="explorer-controls" id="agencyChips">
+        <button class="chip active" data-a="all">Any status</button>
+        <button class="chip" data-a="Self">Acting as self</button>
+        <button class="chip" data-a="Overridden">Overridden / possessed</button>
+      </div>
+      <div class="explorer-grid" id="explorerGrid"></div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ================= LIMITS ================= -->
+<section class="tight">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Before you take this further</div>
+      <h2>Where this could be wrong.</h2>
+    </div>
+    <div class="case-file reveal d1">
+      <div class="eyebrow">Case notes</div>
+      <ul>
+        <li>Sample is 100 films, supernatural/paranormal horror only — no slasher comparison exists in this dataset.</li>
+        <li>"Acting as self vs. overridden" is an interpretive judgment call made film-by-film, not a column in the source data. A handful of cases (Hellraiser, Christine, Constantine) are genuinely borderline.</li>
+        <li>No literal box-office dollar figures — only "trendsetter" vs. "mid-section" revenue tier labels, so revenue claims are directional, not exact.</li>
+        <li>Gender coding collapses complex or dual entities (e.g. "Male / Female-presenting") into simplified categories for comparison.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CLOSER ================= -->
+<section class="closer">
+  <div class="wrap reveal">
+    <div class="eyebrow" style="display:flex;">the reframe</div>
+    <h2>Women aren't the face of horror.<br>They're the body evil <em style="font-style:italic; color:var(--crimson-text);">wears</em>.</h2>
+  </div>
+</section>
+
+<div class="footer">Data: 100 supernatural horror films, TMDB-sourced stratified sample, 1976–2026 · analysis &amp; visualization, 2026</div>
+
+<script>
+/* =============== DATA (injected below) =============== */
+const MOVIES = [{"id": 1, "title": "The Omen", "year": 1976, "decade": "1976–1985", "tier": "Trendsetter", "loreAntagonist": "Damien Thorn / Demonic Antichrist", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Damien Thorn / Mrs. Baylock", "physGender": "Male / Female", "physG": "Both", "age": 5.0, "ageCategory": "Child (0-12 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Alive", "masked": "No", "selfOverridden": "Self"}, {"id": 2, "title": "Carrie", "year": 1976, "decade": "1976–1985", "tier": "Trendsetter", "loreAntagonist": "Margaret White / Telekinetic Curse", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Margaret White & Carrie White", "physGender": "Female", "physG": "Female", "age": 16.0, "ageCategory": "Teen (13-19 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Alive", "masked": "No", "selfOverridden": "Self"}, {"id": 3, "title": "The Amityville Horror", "year": 1979, "decade": "1976–1985", "tier": "Trendsetter", "loreAntagonist": "Demonic Entity / Evil Spirits", "loreGender": "Genderless / Demonic", "loreG": "Neutral", "physAntagonist": "George Lutz (Possessed Husband)", "physGender": "Male", "physG": "Male", "age": 38.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Alive", "masked": "No", "selfOverridden": "Overridden"}, {"id": 4, "title": "The Fog", "year": 1980, "decade": "1976–1985", "tier": "Trendsetter", "loreAntagonist": "Captain Blake & Ghost Pirates", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Captain Blake", "physGender": "Male", "physG": "Male", "age": 40.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "Yes", "weaponDesc": "Cutlasses, hooks, swords", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 5, "title": "The Shining", "year": 1980, "decade": "1976–1985", "tier": "Trendsetter", "loreAntagonist": "The Overlook Hotel / Jack Torrance", "loreGender": "Male / Entity", "loreG": "Male", "physAntagonist": "Jack Torrance (Possessed)", "physGender": "Male", "physG": "Male", "age": 34.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Alive", "masked": "No", "selfOverridden": "Overridden"}, {"id": 6, "title": "An American Werewolf in London", "year": 1981, "decade": "1976–1985", "tier": "Trendsetter", "loreAntagonist": "Werewolf Curse / Undead Specters", "loreGender": "Male", "loreG": "Male", "physAntagonist": "David Kessler (Lycanthrope)", "physGender": "Male", "physG": "Male", "age": 21.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Alive", "masked": "No", "selfOverridden": "Overridden"}, {"id": 7, "title": "Poltergeist", "year": 1982, "decade": "1976–1985", "tier": "Trendsetter", "loreAntagonist": "The Beast (Reverend Kane's Spirit)", "loreGender": "Male / Demonic", "loreG": "Male", "physAntagonist": "Reverend Kane (The Beast Spirit)", "physGender": "Male", "physG": "Male", "age": 65.0, "ageCategory": "Elderly/Senior (60-150 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 8, "title": "Christine", "year": 1983, "decade": "1976–1985", "tier": "Trendsetter", "loreAntagonist": "Christine (Possessed Vehicle)", "loreGender": "Female (Vehicle)", "loreG": "Female", "physAntagonist": "Christine (Possessed Vehicle) / Arnie", "physGender": "Female (Vehicle) / Male", "physG": "Both", "age": 17.0, "ageCategory": "Teen (13-19 yrs)", "hasWeapon": "Yes", "weaponDesc": "Car Body", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 9, "title": "A Nightmare on Elm Street", "year": 1984, "decade": "1976–1985", "tier": "Trendsetter", "loreAntagonist": "Freddy Krueger", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Freddy Krueger", "physGender": "Male", "physG": "Male", "age": 40.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "Yes", "weaponDesc": "Bladed Glove", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 10, "title": "Ghostbusters", "year": 1984, "decade": "1976–1985", "tier": "Trendsetter", "loreAntagonist": "Gozer the Gozerian", "loreGender": "Female / Genderless", "loreG": "Female", "physAntagonist": "Gozer / Possessed Dana Barrett", "physGender": "Female", "physG": "Female", "age": 35.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 11, "title": "Burnt Offerings", "year": 1976, "decade": "1976–1985", "tier": "Mid-Section", "loreAntagonist": "Allardyce House Entity", "loreGender": "Genderless", "loreG": "Neutral", "physAntagonist": "Marian Rolfe (Possessed Mother)", "physGender": "Female", "physG": "Female", "age": 37.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 12, "title": "The Sentinel", "year": 1977, "decade": "1976–1985", "tier": "Mid-Section", "loreAntagonist": "Malachi / Gateway Demons", "loreGender": "Demonic", "loreG": "Neutral", "physAntagonist": "Alison Parker's Dark Doppelgänger", "physGender": "Female", "physG": "Female", "age": 26.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 13, "title": "Audrey Rose", "year": 1977, "decade": "1976–1985", "tier": "Mid-Section", "loreAntagonist": "Reincarnated Spirit", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Audrey Rose (Reincarnated Soul)", "physGender": "Female", "physG": "Female", "age": 11.0, "ageCategory": "Child (0-12 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Alive", "masked": "No", "selfOverridden": "Overridden"}, {"id": 14, "title": "The Legacy", "year": 1978, "decade": "1976–1985", "tier": "Mid-Section", "loreAntagonist": "Jason Mountford / Satanic Curse", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Margaret Walsh / Jason Mountford", "physGender": "Female / Male", "physG": "Both", "age": 35.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Alive", "masked": "No", "selfOverridden": "Self"}, {"id": 15, "title": "The Changeling", "year": 1980, "decade": "1976–1985", "tier": "Mid-Section", "loreAntagonist": "Ghost of Joseph Carmichael", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Senator Carmichael / Ghost Child", "physGender": "Male", "physG": "Male", "age": 7.0, "ageCategory": "Child (0-12 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 16, "title": "Ghost Story", "year": 1981, "decade": "1976–1985", "tier": "Mid-Section", "loreAntagonist": "Eva Galli / Alma Mobley", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Eva Galli / Alma Mobley", "physGender": "Female", "physG": "Female", "age": 25.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 17, "title": "The Evil Dead", "year": 1981, "decade": "1976–1985", "tier": "Mid-Section", "loreAntagonist": "Kandarian Demon / Deadites", "loreGender": "Genderless / Demonic", "loreG": "Neutral", "physAntagonist": "Cheryl Williams (First/Primary Deadite)", "physGender": "Female", "physG": "Female", "age": 22.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 18, "title": "The Entity", "year": 1982, "decade": "1976–1985", "tier": "Mid-Section", "loreAntagonist": "The Entity (Incorporeal Demon)", "loreGender": "Male / Demonic", "loreG": "Male", "physAntagonist": "The Entity (Male-coded Incubus)", "physGender": "Male", "physG": "Male", "age": 40.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 19, "title": "Superstition", "year": 1982, "decade": "1976–1985", "tier": "Mid-Section", "loreAntagonist": "Elondra (Witch of Blackmoor)", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Elondra (The Witch of Blackmoor)", "physGender": "Female", "physG": "Female", "age": 300.0, "ageCategory": "Ancient Entity (150+ yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 20, "title": "House", "year": 1985, "decade": "1976–1985", "tier": "Mid-Section", "loreAntagonist": "Big Ben's Vengeful Spirit", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Big Ben's Zombie / Sandy Ghost", "physGender": "Male", "physG": "Male", "age": 35.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "Yes", "weaponDesc": "Military Firearm / Gun", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 21, "title": "Evil Dead II", "year": 1987, "decade": "1986–1995", "tier": "Trendsetter", "loreAntagonist": "Kandarian Demon / Henriette Deadite", "loreGender": "Female / Demonic", "loreG": "Female", "physAntagonist": "Henriette Deadite / Deadite Linda", "physGender": "Female", "physG": "Female", "age": 45.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 22, "title": "Hellraiser", "year": 1987, "decade": "1986–1995", "tier": "Trendsetter", "loreAntagonist": "Pinhead & The Cenobites", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Julia Cotton / Pinhead", "physGender": "Female / Male", "physG": "Both", "age": 40.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "Yes", "weaponDesc": "Chains and Hooks", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 23, "title": "Child's Play", "year": 1988, "decade": "1986–1995", "tier": "Trendsetter", "loreAntagonist": "Chucky (Charles Lee Ray)", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Chucky (Charles Lee Ray)", "physGender": "Male", "physG": "Male", "age": 30.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "Yes", "weaponDesc": "Voodoo Dagger / Hunting Knife", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 24, "title": "Pet Sematary", "year": 1989, "decade": "1986–1995", "tier": "Trendsetter", "loreAntagonist": "Wendigo Spirit / Resurrected Gage", "loreGender": "Male / Demonic", "loreG": "Male", "physAntagonist": "Resurrected Gage Creed / Zelda", "physGender": "Male / Female", "physG": "Both", "age": 3.0, "ageCategory": "Child (0-12 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 25, "title": "The Exorcist III", "year": 1990, "decade": "1986–1995", "tier": "Trendsetter", "loreAntagonist": "The Gemini Killer / Legion", "loreGender": "Male / Demonic", "loreG": "Male", "physAntagonist": "The Gemini Killer (Possessed Karras)", "physGender": "Male", "physG": "Male", "age": 45.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "Yes", "weaponDesc": "Surgical Shears", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 26, "title": "Flatliners", "year": 1990, "decade": "1986–1995", "tier": "Trendsetter", "loreAntagonist": "Manifestations of Guilt", "loreGender": "Genderless", "loreG": "Neutral", "physAntagonist": "Hallucinated Tormentors (Billy Mahoney)", "physGender": "Male", "physG": "Male", "age": 10.0, "ageCategory": "Child (0-12 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 27, "title": "Candyman", "year": 1992, "decade": "1986–1995", "tier": "Trendsetter", "loreAntagonist": "Daniel Robitaille (Candyman)", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Daniel Robitaille (Candyman)", "physGender": "Male", "physG": "Male", "age": 35.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "Yes", "weaponDesc": "Hook Hand", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 28, "title": "Bram Stoker's Dracula", "year": 1992, "decade": "1986–1995", "tier": "Trendsetter", "loreAntagonist": "Count Dracula", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Count Dracula", "physGender": "Male", "physG": "Male", "age": 400.0, "ageCategory": "Ancient Entity (150+ yrs)", "hasWeapon": "Yes", "weaponDesc": "Nobleman Sword / Dagger", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 29, "title": "Interview with the Vampire", "year": 1994, "decade": "1986–1995", "tier": "Trendsetter", "loreAntagonist": "Lestat de Lioncourt", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Lestat de Lioncourt", "physGender": "Male", "physG": "Male", "age": 200.0, "ageCategory": "Ancient Entity (150+ yrs)", "hasWeapon": "Yes", "weaponDesc": "Scythe / Vampire Blade", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 30, "title": "Casper", "year": 1995, "decade": "1986–1995", "tier": "Trendsetter", "loreAntagonist": "Carrigan Crittenden (Vengeful Ghost)", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Carrigan Crittenden (Vengeful Ghost)", "physGender": "Female", "physG": "Female", "age": 40.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 31, "title": "Witchboard", "year": 1986, "decade": "1986–1995", "tier": "Mid-Section", "loreAntagonist": "Carlos / Malfeitor", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Possessed Brandon / Malfeitor", "physGender": "Male", "physG": "Male", "age": 25.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 32, "title": "Night of the Demons", "year": 1988, "decade": "1986–1995", "tier": "Mid-Section", "loreAntagonist": "Angela Vidal (Demonic Possession)", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Angela Vidal (Possessed Host)", "physGender": "Female", "physG": "Female", "age": 18.0, "ageCategory": "Teen (13-19 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 33, "title": "The Serpent and the Rainbow", "year": 1988, "decade": "1986–1995", "tier": "Mid-Section", "loreAntagonist": "Dargent Peytraud (Dark Bokor)", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Dargent Peytraud", "physGender": "Male", "physG": "Male", "age": 50.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "Yes", "weaponDesc": "Voodoo Stiletto / Machete", "status": "Alive", "masked": "No", "selfOverridden": "Self"}, {"id": 34, "title": "Child's Play 2", "year": 1990, "decade": "1986–1995", "tier": "Mid-Section", "loreAntagonist": "Chucky (Charles Lee Ray)", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Chucky (Charles Lee Ray)", "physGender": "Male", "physG": "Male", "age": 30.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "Yes", "weaponDesc": "Blade-Hand Attachment", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 35, "title": "The First Power", "year": 1990, "decade": "1986–1995", "tier": "Mid-Section", "loreAntagonist": "Patrick Channing (Pentagram Killer)", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Patrick Channing (Spirit Killer)", "physGender": "Male", "physG": "Male", "age": 35.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "Yes", "weaponDesc": "Pentagram Ritual Knife", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 36, "title": "Subspecies", "year": 1991, "decade": "1986–1995", "tier": "Mid-Section", "loreAntagonist": "Radu Vladislas", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Radu Vladislas", "physGender": "Male", "physG": "Male", "age": 400.0, "ageCategory": "Ancient Entity (150+ yrs)", "hasWeapon": "Yes", "weaponDesc": "Blood Stone Dagger", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 37, "title": "Sleepwalkers", "year": 1992, "decade": "1986–1995", "tier": "Mid-Section", "loreAntagonist": "Mary Brady", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Mary Brady", "physGender": "Female", "physG": "Female", "age": 40.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 38, "title": "Needful Things", "year": 1993, "decade": "1986–1995", "tier": "Mid-Section", "loreAntagonist": "Leland Gaunt (The Devil)", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Leland Gaunt", "physGender": "Male", "physG": "Male", "age": 1000.0, "ageCategory": "Ancient Entity (150+ yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 39, "title": "In the Mouth of Madness", "year": 1994, "decade": "1986–1995", "tier": "Mid-Section", "loreAntagonist": "Sutter Cane / The Ancient Ones", "loreGender": "Male / Demonic", "loreG": "Male", "physAntagonist": "Sutter Cane", "physGender": "Male", "physG": "Male", "age": 50.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 40, "title": "Tales from the Crypt: Demon Knight", "year": 1995, "decade": "1986–1995", "tier": "Mid-Section", "loreAntagonist": "The Collector", "loreGender": "Male", "loreG": "Male", "physAntagonist": "The Collector", "physGender": "Male", "physG": "Male", "age": 1000.0, "ageCategory": "Ancient Entity (150+ yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 41, "title": "The Blair Witch Project", "year": 1999, "decade": "1996–2005", "tier": "Trendsetter", "loreAntagonist": "Elly Kedward (The Blair Witch)", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Elly Kedward (The Blair Witch)", "physGender": "Female", "physG": "Female", "age": 200.0, "ageCategory": "Ancient Entity (150+ yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 42, "title": "The Sixth Sense", "year": 1999, "decade": "1996–2005", "tier": "Trendsetter", "loreAntagonist": "Unresolved Traumatized Spirits", "loreGender": "Various", "loreG": "Neutral", "physAntagonist": "Kyra's Poisoning Mother / Ghosts", "physGender": "Female", "physG": "Female", "age": 30.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 43, "title": "What Lies Beneath", "year": 2000, "decade": "1996–2005", "tier": "Trendsetter", "loreAntagonist": "Dr. Norman Spencer / Ghost of Madison", "loreGender": "Male / Female", "loreG": "Both", "physAntagonist": "Dr. Norman Spencer", "physGender": "Male", "physG": "Male", "age": 55.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Alive", "masked": "No", "selfOverridden": "Self"}, {"id": 44, "title": "Final Destination", "year": 2000, "decade": "1996–2005", "tier": "Trendsetter", "loreAntagonist": "Death / Grim Reaper", "loreGender": "Genderless", "loreG": "Neutral", "physAntagonist": "Grim Reaper / Unseen Force", "physGender": "Genderless", "physG": "Neutral", "age": 9999.0, "ageCategory": "Ancient Entity (150+ yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 45, "title": "The Others", "year": 2001, "decade": "1996–2005", "tier": "Trendsetter", "loreAntagonist": "Traumatized Vengeful Spirits", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Grace Stewart (Deluded Mother Ghost)", "physGender": "Female", "physG": "Female", "age": 35.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 46, "title": "The Ring", "year": 2002, "decade": "1996–2005", "tier": "Trendsetter", "loreAntagonist": "Samara Morgan", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Samara Morgan", "physGender": "Female", "physG": "Female", "age": 8.0, "ageCategory": "Child (0-12 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 47, "title": "The Grudge", "year": 2004, "decade": "1996–2005", "tier": "Trendsetter", "loreAntagonist": "Kayako Saeki", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Kayako Saeki", "physGender": "Female", "physG": "Female", "age": 28.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 48, "title": "Constantine", "year": 2005, "decade": "1996–2005", "tier": "Trendsetter", "loreAntagonist": "Mammon / Archangel Gabriel", "loreGender": "Male / Male-presenting", "loreG": "Male", "physAntagonist": "Archangel Gabriel / Mammon Host", "physGender": "Male / Female", "physG": "Both", "age": 30.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "Yes", "weaponDesc": "Spear of Destiny", "status": "Dead", "masked": "No", "selfOverridden": "Mixed"}, {"id": 49, "title": "The Exorcism of Emily Rose", "year": 2005, "decade": "1996–2005", "tier": "Trendsetter", "loreAntagonist": "Six Demonic Entities", "loreGender": "Demonic", "loreG": "Neutral", "physAntagonist": "Possessed Emily Rose", "physGender": "Female", "physG": "Female", "age": 19.0, "ageCategory": "Teen (13-19 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 50, "title": "The Skeleton Key", "year": 2005, "decade": "1996–2005", "tier": "Trendsetter", "loreAntagonist": "Papa Justify & Mama Cecile", "loreGender": "Male & Female", "loreG": "Both", "physAntagonist": "Mama Cecile (Possessing Caroline)", "physGender": "Female", "physG": "Female", "age": 25.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Alive", "masked": "No", "selfOverridden": "Overridden"}, {"id": 51, "title": "The Craft", "year": 1996, "decade": "1996–2005", "tier": "Mid-Section", "loreAntagonist": "Nancy Downs", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Nancy Downs", "physGender": "Female", "physG": "Female", "age": 17.0, "ageCategory": "Teen (13-19 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Alive", "masked": "No", "selfOverridden": "Self"}, {"id": 52, "title": "Fallen", "year": 1998, "decade": "1996–2005", "tier": "Mid-Section", "loreAntagonist": "Azazel (Fallen Angel / Demon)", "loreGender": "Demonic", "loreG": "Neutral", "physAntagonist": "Azazel (Inhabiting Human Hosts)", "physGender": "Male / Female", "physG": "Both", "age": 40.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 53, "title": "Stir of Echoes", "year": 1999, "decade": "1996–2005", "tier": "Mid-Section", "loreAntagonist": "Ghost of Samantha / Frank McCarthy", "loreGender": "Female / Male", "loreG": "Both", "physAntagonist": "Ghost of Samantha / Frank McCarthy", "physGender": "Female / Male", "physG": "Both", "age": 17.0, "ageCategory": "Teen (13-19 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 54, "title": "Thir13en Ghosts", "year": 2001, "decade": "1996–2005", "tier": "Mid-Section", "loreAntagonist": "Cyrus Kriticos / Black Zodiac Ghosts", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Cyrus Kriticos / The Angry Princess", "physGender": "Male / Female", "physG": "Both", "age": 25.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "Yes", "weaponDesc": "The Hammer's Sledgehammer", "status": "Dead", "masked": "Yes", "selfOverridden": "Self"}, {"id": 55, "title": "Ghost Ship", "year": 2002, "decade": "1996–2005", "tier": "Mid-Section", "loreAntagonist": "Jack Ferriman (Soul Collector)", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Jack Ferriman", "physGender": "Male", "physG": "Male", "age": 35.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 56, "title": "Darkness Falls", "year": 2003, "decade": "1996–2005", "tier": "Mid-Section", "loreAntagonist": "Matilda Dixon (The Tooth Fairy)", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Matilda Dixon (Tooth Fairy)", "physGender": "Female", "physG": "Female", "age": 150.0, "ageCategory": "Elderly/Senior (60-150 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "Yes", "selfOverridden": "Self"}, {"id": 57, "title": "Gothika", "year": 2003, "decade": "1996–2005", "tier": "Mid-Section", "loreAntagonist": "Sheriff Doug Grey", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Sheriff Doug Grey", "physGender": "Male", "physG": "Male", "age": 45.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Alive", "masked": "No", "selfOverridden": "Self"}, {"id": 58, "title": "Dead End", "year": 2003, "decade": "1996–2005", "tier": "Mid-Section", "loreAntagonist": "The Lady in White / Death", "loreGender": "Female", "loreG": "Female", "physAntagonist": "The Lady in White", "physGender": "Female", "physG": "Female", "age": 30.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 59, "title": "White Noise", "year": 2005, "decade": "1996–2005", "tier": "Mid-Section", "loreAntagonist": "Shadow People (EVP Entities)", "loreGender": "Genderless", "loreG": "Neutral", "physAntagonist": "EVP Shadow Killers", "physGender": "Male / Genderless", "physG": "Male", "age": 40.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 60, "title": "The Fog", "year": 2005, "decade": "1996–2005", "tier": "Mid-Section", "loreAntagonist": "Captain Patrick Malone's Crew", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Captain Patrick Malone's Ghost", "physGender": "Male", "physG": "Male", "age": 40.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "Yes", "weaponDesc": "Cutlasses, hooks, gaffs", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 61, "title": "Paranormal Activity", "year": 2007, "decade": "2006–2015", "tier": "Trendsetter", "loreAntagonist": "Tobi (The Demon)", "loreGender": "Male / Demonic", "loreG": "Male", "physAntagonist": "Possessed Katie", "physGender": "Female", "physG": "Female", "age": 21.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 62, "title": "Drag Me to Hell", "year": 2009, "decade": "2006–2015", "tier": "Trendsetter", "loreAntagonist": "The Lamia (Curse Demon)", "loreGender": "Demonic", "loreG": "Neutral", "physAntagonist": "Mrs. Sylvia Ganush (Gypsy)", "physGender": "Female", "physG": "Female", "age": 70.0, "ageCategory": "Elderly/Senior (60-150 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 63, "title": "Insidious", "year": 2010, "decade": "2006–2015", "tier": "Trendsetter", "loreAntagonist": "Lipstick-Face Demon / Bride in Black", "loreGender": "Male / Demonic", "loreG": "Male", "physAntagonist": "The Bride in Black (Parker Crane)", "physGender": "Male (Female-dressing)", "physG": "Both", "age": 70.0, "ageCategory": "Elderly/Senior (60-150 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "Yes", "selfOverridden": "Self"}, {"id": 64, "title": "The Woman in Black", "year": 2012, "decade": "2006–2015", "tier": "Trendsetter", "loreAntagonist": "Jennet Humfrye", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Jennet Humfrye", "physGender": "Female", "physG": "Female", "age": 30.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "Yes", "selfOverridden": "Self"}, {"id": 65, "title": "Sinister", "year": 2012, "decade": "2006–2015", "tier": "Trendsetter", "loreAntagonist": "Bughuul (Bagul)", "loreGender": "Male / Demonic", "loreG": "Male", "physAntagonist": "Possessed Children (Stephanie, Ashley)", "physGender": "Female / Male", "physG": "Both", "age": 10.0, "ageCategory": "Child (0-12 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 66, "title": "Mama", "year": 2013, "decade": "2006–2015", "tier": "Trendsetter", "loreAntagonist": "Edith Brennan (Mama)", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Edith Brennan (Mama)", "physGender": "Female", "physG": "Female", "age": 30.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 67, "title": "The Conjuring", "year": 2013, "decade": "2006–2015", "tier": "Trendsetter", "loreAntagonist": "Bathsheba Sherman", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Bathsheba Sherman / Possessed Carolyn", "physGender": "Female", "physG": "Female", "age": 150.0, "ageCategory": "Elderly/Senior (60-150 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 68, "title": "Annabelle", "year": 2014, "decade": "2006–2015", "tier": "Trendsetter", "loreAntagonist": "Malthus (The Annabelle Demon)", "loreGender": "Male / Demonic", "loreG": "Male", "physAntagonist": "Annabelle Higgins / Possessed Doll", "physGender": "Female", "physG": "Female", "age": 7.0, "ageCategory": "Child (0-12 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 69, "title": "Ouija", "year": 2014, "decade": "2006–2015", "tier": "Trendsetter", "loreAntagonist": "Doris Zander / Paulina Zander", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Doris Zander / Paulina Zander", "physGender": "Female", "physG": "Female", "age": 15.0, "ageCategory": "Teen (13-19 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 70, "title": "It Follows", "year": 2014, "decade": "2006–2015", "tier": "Trendsetter", "loreAntagonist": "Shape-shifting Entity / Curse", "loreGender": "Genderless", "loreG": "Neutral", "physAntagonist": "Shape-shifting Stalkers", "physGender": "Female / Male", "physG": "Both", "age": 20.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 71, "title": "1408", "year": 2007, "decade": "2006–2015", "tier": "Mid-Section", "loreAntagonist": "Room 1408 Entity", "loreGender": "Genderless", "loreG": "Neutral", "physAntagonist": "Phantom Daughter / Room Entities", "physGender": "Female", "physG": "Female", "age": 10.0, "ageCategory": "Child (0-12 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 72, "title": "The Orphanage", "year": 2007, "decade": "2006–2015", "tier": "Mid-Section", "loreAntagonist": "Tomás' Ghost / House Spirits", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Benigna Escobedo", "physGender": "Female", "physG": "Female", "age": 60.0, "ageCategory": "Elderly/Senior (60-150 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "Yes", "selfOverridden": "Self"}, {"id": 73, "title": "Mirrors", "year": 2008, "decade": "2006–2015", "tier": "Mid-Section", "loreAntagonist": "Esseker Demon", "loreGender": "Demonic", "loreG": "Neutral", "physAntagonist": "Possessed Anna Esseker", "physGender": "Female", "physG": "Female", "age": 12.0, "ageCategory": "Child (0-12 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 74, "title": "The Uninvited", "year": 2009, "decade": "2006–2015", "tier": "Mid-Section", "loreAntagonist": "Rachel Summers / Delusion", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Rachel Summers / Deluded Anna", "physGender": "Female", "physG": "Female", "age": 18.0, "ageCategory": "Teen (13-19 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Alive", "masked": "No", "selfOverridden": "Self"}, {"id": 75, "title": "The Last Exorcism", "year": 2010, "decade": "2006–2015", "tier": "Mid-Section", "loreAntagonist": "Abalam (Demon)", "loreGender": "Demonic", "loreG": "Neutral", "physAntagonist": "Possessed Nell Sweetzer", "physGender": "Female", "physG": "Female", "age": 16.0, "ageCategory": "Teen (13-19 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 76, "title": "The Possession", "year": 2012, "decade": "2006–2015", "tier": "Mid-Section", "loreAntagonist": "Abyzou (Dybbuk Box Spirit)", "loreGender": "Female / Demonic", "loreG": "Female", "physAntagonist": "Possessed Em Brenek", "physGender": "Female", "physG": "Female", "age": 10.0, "ageCategory": "Child (0-12 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 77, "title": "Oculus", "year": 2013, "decade": "2006–2015", "tier": "Mid-Section", "loreAntagonist": "The Lasser Glass Entity", "loreGender": "Genderless", "loreG": "Neutral", "physAntagonist": "Possessed Marie Russell / Mirror Ghosts", "physGender": "Female", "physG": "Female", "age": 25.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 78, "title": "The Babadook", "year": 2014, "decade": "2006–2015", "tier": "Mid-Section", "loreAntagonist": "Mister Babadook", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Possessed Amelia / Mister Babadook", "physGender": "Female / Male", "physG": "Both", "age": 40.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 79, "title": "Unfriended", "year": 2014, "decade": "2006–2015", "tier": "Mid-Section", "loreAntagonist": "Laura Barns (Digital Spirit)", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Laura Barns (Digital Spirit)", "physGender": "Female", "physG": "Female", "age": 17.0, "ageCategory": "Teen (13-19 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 80, "title": "As Above, So Below", "year": 2014, "decade": "2006–2015", "tier": "Mid-Section", "loreAntagonist": "Catacomb Entities / The Devil", "loreGender": "Male / Demonic", "loreG": "Male", "physAntagonist": "Guilt Manifestations (Mouxy/Papillon)", "physGender": "Male / Female", "physG": "Both", "age": 30.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "Yes", "selfOverridden": "Self"}, {"id": 81, "title": "The Conjuring 2", "year": 2016, "decade": "2016–2026", "tier": "Trendsetter", "loreAntagonist": "Valak (The Demon Nun)", "loreGender": "Demonic (Female pres.)", "loreG": "Female", "physAntagonist": "Valak (The Demon Nun)", "physGender": "Female Presentation", "physG": "Female", "age": 50.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 82, "title": "Lights Out", "year": 2016, "decade": "2016–2026", "tier": "Trendsetter", "loreAntagonist": "Diana Walter", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Diana Walter", "physGender": "Female", "physG": "Female", "age": 25.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 83, "title": "Annabelle: Creation", "year": 2017, "decade": "2016–2026", "tier": "Trendsetter", "loreAntagonist": "Malthus (The Annabelle Demon)", "loreGender": "Male / Demonic", "loreG": "Male", "physAntagonist": "Possessed Janice / Annabelle", "physGender": "Female", "physG": "Female", "age": 12.0, "ageCategory": "Child (0-12 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 84, "title": "Hereditary", "year": 2018, "decade": "2016–2026", "tier": "Trendsetter", "loreAntagonist": "King Paimon", "loreGender": "Male / Demonic", "loreG": "Male", "physAntagonist": "Ellen Leigh / Possessed Annie", "physGender": "Female", "physG": "Female", "age": 50.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 85, "title": "The Nun", "year": 2018, "decade": "2016–2026", "tier": "Trendsetter", "loreAntagonist": "Valak (The Demon Nun)", "loreGender": "Demonic (Female pres.)", "loreG": "Female", "physAntagonist": "Valak (The Demon Nun)", "physGender": "Female Presentation", "physG": "Female", "age": 50.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 86, "title": "Smile", "year": 2022, "decade": "2016–2026", "tier": "Trendsetter", "loreAntagonist": "The Smile Entity / Curse", "loreGender": "Genderless", "loreG": "Neutral", "physAntagonist": "Possessed Hosts (Laura Haslam, etc.)", "physGender": "Female", "physG": "Female", "age": 30.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 87, "title": "Evil Dead Rise", "year": 2023, "decade": "2016–2026", "tier": "Trendsetter", "loreAntagonist": "Ellie (The Mara Deadite)", "loreGender": "Female / Demonic", "loreG": "Female", "physAntagonist": "Ellie Bixler (Deadite Ellie / Marauder)", "physGender": "Female", "physG": "Female", "age": 40.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 88, "title": "The Nun II", "year": 2023, "decade": "2016–2026", "tier": "Trendsetter", "loreAntagonist": "Valak", "loreGender": "Demonic (Female pres.)", "loreG": "Female", "physAntagonist": "Valak", "physGender": "Female Presentation", "physG": "Female", "age": 50.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 89, "title": "Talk to Me", "year": 2023, "decade": "2016–2026", "tier": "Trendsetter", "loreAntagonist": "Vengeful Spirits", "loreGender": "Genderless / Male", "loreG": "Male", "physAntagonist": "Possessed Riley / Mia's Mother", "physGender": "Female / Male", "physG": "Both", "age": 15.0, "ageCategory": "Teen (13-19 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 90, "title": "The First Omen", "year": 2024, "decade": "2016–2026", "tier": "Trendsetter", "loreAntagonist": "Demonic Cult / Jackal Demon", "loreGender": "Demonic", "loreG": "Neutral", "physAntagonist": "Sister Margaret / Abbess Silvia", "physGender": "Female", "physG": "Female", "age": 60.0, "ageCategory": "Elderly/Senior (60-150 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Alive", "masked": "No", "selfOverridden": "Self"}, {"id": 91, "title": "Ouija: Origin of Evil", "year": 2016, "decade": "2016–2026", "tier": "Mid-Section", "loreAntagonist": "Marcus / Demonic Spirits", "loreGender": "Male / Demonic", "loreG": "Male", "physAntagonist": "Possessed Doris Zander", "physGender": "Female", "physG": "Female", "age": 9.0, "ageCategory": "Child (0-12 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 92, "title": "The Autopsy of Jane Doe", "year": 2016, "decade": "2016–2026", "tier": "Mid-Section", "loreAntagonist": "Jane Doe (Ancient Witch)", "loreGender": "Female", "loreG": "Female", "physAntagonist": "Jane Doe (Ancient Witch)", "physGender": "Female", "physG": "Female", "age": 25.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 93, "title": "Winchester", "year": 2018, "decade": "2016–2026", "tier": "Mid-Section", "loreAntagonist": "Benjamin Lafayette Mathews", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Benjamin Lafayette Mathews", "physGender": "Male", "physG": "Male", "age": 65.0, "ageCategory": "Elderly/Senior (60-150 yrs)", "hasWeapon": "Yes", "weaponDesc": "Winchester Rifles", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 94, "title": "The Prodigy", "year": 2019, "decade": "2016–2026", "tier": "Mid-Section", "loreAntagonist": "Edward Scarka", "loreGender": "Male", "loreG": "Male", "physAntagonist": "Miles Blume (Inhabited by Edward Scarka)", "physGender": "Male", "physG": "Male", "age": 8.0, "ageCategory": "Child (0-12 yrs)", "hasWeapon": "Yes", "weaponDesc": "Edward Scarke's Killer Toolkit", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 95, "title": "Countdown", "year": 2019, "decade": "2016–2026", "tier": "Mid-Section", "loreAntagonist": "Ozziel (App Curse Demon)", "loreGender": "Male / Demonic", "loreG": "Male", "physAntagonist": "Ozziel / App Curse Entities", "physGender": "Male / Female", "physG": "Both", "age": 30.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 96, "title": "The Night House", "year": 2020, "decade": "2016–2026", "tier": "Mid-Section", "loreAntagonist": "Nothingness / Death Entity", "loreGender": "Genderless", "loreG": "Neutral", "physAntagonist": "Owen's Ghost / Shadow Entity", "physGender": "Male", "physG": "Male", "age": 40.0, "ageCategory": "Middle-Aged (36-59 yrs)", "hasWeapon": "Yes", "weaponDesc": "Handgun", "status": "Dead", "masked": "No", "selfOverridden": "Self"}, {"id": 97, "title": "The Pope's Exorcist", "year": 2023, "decade": "2016–2026", "tier": "Mid-Section", "loreAntagonist": "Asmodeus (Demon)", "loreGender": "Male / Demonic", "loreG": "Male", "physAntagonist": "Possessed Henry", "physGender": "Male", "physG": "Male", "age": 10.0, "ageCategory": "Child (0-12 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 98, "title": "Late Night with the Devil", "year": 2023, "decade": "2016–2026", "tier": "Mid-Section", "loreAntagonist": "Abraxas / Evil Entity", "loreGender": "Demonic", "loreG": "Neutral", "physAntagonist": "Possessed Lilly D'Abo", "physGender": "Female", "physG": "Female", "age": 13.0, "ageCategory": "Teen (13-19 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}, {"id": 99, "title": "Tarot", "year": 2024, "decade": "2016–2026", "tier": "Mid-Section", "loreAntagonist": "The Astrologer / Curse Entities", "loreGender": "Female", "loreG": "Female", "physAntagonist": "The Astrologer", "physGender": "Female", "physG": "Female", "age": 400.0, "ageCategory": "Ancient Entity (150+ yrs)", "hasWeapon": "Yes", "weaponDesc": "Astrologer's Shears & Cursed Deck", "status": "Dead", "masked": "Yes", "selfOverridden": "Self"}, {"id": 100, "title": "Obsession", "year": 2026, "decade": "2016–2026", "tier": "Mid-Section", "loreAntagonist": "Possession Entity / Demonic Spirit", "loreGender": "Female / Demonic", "loreG": "Female", "physAntagonist": "Possessed Female Host", "physGender": "Female", "physG": "Female", "age": 25.0, "ageCategory": "Young Adult (20-35 yrs)", "hasWeapon": "No", "weaponDesc": "NO", "status": "Dead", "masked": "No", "selfOverridden": "Overridden"}];
+const STATS = {"loreGenderCounts": {"Male": 45, "Female": 32, "Neutral": 20, "Both": 3}, "physGenderCounts": {"Female": 51, "Male": 32, "Both": 16, "Neutral": 1}, "byDecade": [{"decade": "1976-1985", "loreFemale": 30.0, "physFemale": 55.0}, {"decade": "1986-1995", "loreFemale": 20.0, "physFemale": 30.0}, {"decade": "1996-2005", "loreFemale": 50.0, "physFemale": 70.0}, {"decade": "2006-2015", "loreFemale": 35.0, "physFemale": 100.0}, {"decade": "2016-2026", "loreFemale": 40.0, "physFemale": 80.0}], "weaponPctByGender": {"Female": 2.0, "Male": 50.0}, "ageMedian": {"Female": 25.0, "Male": 38.0}, "ageScatter": [{"g": "Female", "age": 16.0, "title": "Carrie"}, {"g": "Male", "age": 38.0, "title": "The Amityville Horror"}, {"g": "Male", "age": 40.0, "title": "The Fog"}, {"g": "Male", "age": 34.0, "title": "The Shining"}, {"g": "Male", "age": 21.0, "title": "An American Werewolf in London"}, {"g": "Male", "age": 65.0, "title": "Poltergeist"}, {"g": "Male", "age": 40.0, "title": "A Nightmare on Elm Street"}, {"g": "Female", "age": 35.0, "title": "Ghostbusters"}, {"g": "Female", "age": 37.0, "title": "Burnt Offerings"}, {"g": "Female", "age": 26.0, "title": "The Sentinel"}, {"g": "Female", "age": 11.0, "title": "Audrey Rose"}, {"g": "Male", "age": 7.0, "title": "The Changeling"}, {"g": "Female", "age": 25.0, "title": "Ghost Story"}, {"g": "Female", "age": 22.0, "title": "The Evil Dead"}, {"g": "Male", "age": 40.0, "title": "The Entity"}, {"g": "Female", "age": 300.0, "title": "Superstition"}, {"g": "Male", "age": 35.0, "title": "House"}, {"g": "Female", "age": 45.0, "title": "Evil Dead II"}, {"g": "Male", "age": 30.0, "title": "Child's Play"}, {"g": "Male", "age": 45.0, "title": "The Exorcist III"}, {"g": "Male", "age": 10.0, "title": "Flatliners"}, {"g": "Male", "age": 35.0, "title": "Candyman"}, {"g": "Male", "age": 400.0, "title": "Bram Stoker's Dracula"}, {"g": "Male", "age": 200.0, "title": "Interview with the Vampire"}, {"g": "Female", "age": 40.0, "title": "Casper"}, {"g": "Male", "age": 25.0, "title": "Witchboard"}, {"g": "Female", "age": 18.0, "title": "Night of the Demons"}, {"g": "Male", "age": 50.0, "title": "The Serpent and the Rainbow"}, {"g": "Male", "age": 30.0, "title": "Child's Play 2"}, {"g": "Male", "age": 35.0, "title": "The First Power"}, {"g": "Male", "age": 400.0, "title": "Subspecies"}, {"g": "Female", "age": 40.0, "title": "Sleepwalkers"}, {"g": "Male", "age": 1000.0, "title": "Needful Things"}, {"g": "Male", "age": 50.0, "title": "In the Mouth of Madness"}, {"g": "Male", "age": 1000.0, "title": "Tales from the Crypt: Demon Knight"}, {"g": "Female", "age": 200.0, "title": "The Blair Witch Project"}, {"g": "Female", "age": 30.0, "title": "The Sixth Sense"}, {"g": "Male", "age": 55.0, "title": "What Lies Beneath"}, {"g": "Female", "age": 35.0, "title": "The Others"}, {"g": "Female", "age": 8.0, "title": "The Ring"}, {"g": "Female", "age": 28.0, "title": "The Grudge"}, {"g": "Female", "age": 19.0, "title": "The Exorcism of Emily Rose"}, {"g": "Female", "age": 25.0, "title": "The Skeleton Key"}, {"g": "Female", "age": 17.0, "title": "The Craft"}, {"g": "Male", "age": 35.0, "title": "Ghost Ship"}, {"g": "Female", "age": 150.0, "title": "Darkness Falls"}, {"g": "Male", "age": 45.0, "title": "Gothika"}, {"g": "Female", "age": 30.0, "title": "Dead End"}, {"g": "Male", "age": 40.0, "title": "White Noise"}, {"g": "Male", "age": 40.0, "title": "The Fog"}, {"g": "Female", "age": 21.0, "title": "Paranormal Activity"}, {"g": "Female", "age": 70.0, "title": "Drag Me to Hell"}, {"g": "Female", "age": 30.0, "title": "The Woman in Black"}, {"g": "Female", "age": 30.0, "title": "Mama"}, {"g": "Female", "age": 150.0, "title": "The Conjuring"}, {"g": "Female", "age": 7.0, "title": "Annabelle"}, {"g": "Female", "age": 15.0, "title": "Ouija"}, {"g": "Female", "age": 10.0, "title": "1408"}, {"g": "Female", "age": 60.0, "title": "The Orphanage"}, {"g": "Female", "age": 12.0, "title": "Mirrors"}, {"g": "Female", "age": 18.0, "title": "The Uninvited"}, {"g": "Female", "age": 16.0, "title": "The Last Exorcism"}, {"g": "Female", "age": 10.0, "title": "The Possession"}, {"g": "Female", "age": 25.0, "title": "Oculus"}, {"g": "Female", "age": 17.0, "title": "Unfriended"}, {"g": "Female", "age": 50.0, "title": "The Conjuring 2"}, {"g": "Female", "age": 25.0, "title": "Lights Out"}, {"g": "Female", "age": 12.0, "title": "Annabelle: Creation"}, {"g": "Female", "age": 50.0, "title": "Hereditary"}, {"g": "Female", "age": 50.0, "title": "The Nun"}, {"g": "Female", "age": 30.0, "title": "Smile"}, {"g": "Female", "age": 40.0, "title": "Evil Dead Rise"}, {"g": "Female", "age": 50.0, "title": "The Nun II"}, {"g": "Female", "age": 60.0, "title": "The First Omen"}, {"g": "Female", "age": 9.0, "title": "Ouija: Origin of Evil"}, {"g": "Female", "age": 25.0, "title": "The Autopsy of Jane Doe"}, {"g": "Male", "age": 65.0, "title": "Winchester"}, {"g": "Male", "age": 8.0, "title": "The Prodigy"}, {"g": "Male", "age": 40.0, "title": "The Night House"}, {"g": "Male", "age": 10.0, "title": "The Pope's Exorcist"}, {"g": "Female", "age": 13.0, "title": "Late Night with the Devil"}, {"g": "Female", "age": 400.0, "title": "Tarot"}, {"g": "Female", "age": 25.0, "title": "Obsession"}], "minorPct": {"Female": 33.3, "Male": 12.5}, "selfOverriddenByGender": {"Female": {"Self": 27, "Overridden": 24}, "Male": {"Self": 25, "Overridden": 7}}, "aliveDeadByGender": {"Female": {"Dead": 45, "Alive": 6}, "Male": {"Dead": 26, "Alive": 6}}, "tierFemaleShare": {"Mid-Section": 62.0, "Trendsetter": 72.0}, "flips": 33, "reverseFlips": 0};
+
+/* =============== HERO FLIP =============== */
+(function(){
+  const pairs = MOVIES.filter(m => m.loreAntagonist && m.physAntagonist && m.loreAntagonist.split('/')[0].trim() !== m.physAntagonist.split('/')[0].trim())
+    .map(m => ({ lore: m.loreAntagonist.split('/')[0].trim(), phys: m.physAntagonist.split('/')[0].trim() }));
+  let i = 0;
+  const loreEl = document.getElementById('flipLore');
+  const physEl = document.getElementById('flipPhys');
+  function show(){
+    const p = pairs[i % pairs.length];
+    loreEl.classList.add('fading'); physEl.classList.add('fading');
+    setTimeout(()=>{
+      loreEl.textContent = p.lore; physEl.textContent = p.phys;
+      loreEl.classList.remove('fading'); physEl.classList.remove('fading');
+    }, 350);
+    i++;
+  }
+  show();
+  setInterval(show, 2800);
+})();
+
+/* =============== SCROLL REVEAL =============== */
+(function(){
+  const els = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  els.forEach(el => io.observe(el));
+})();
+
+/* =============== COUNT-UP STATS =============== */
+(function(){
+  const nums = document.querySelectorAll('.stat-num');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(!e.isIntersecting) return;
+      io.unobserve(e.target);
+      const target = parseInt(e.target.dataset.count,10);
+      const dur = 1100; const start = performance.now();
+      function tick(t){
+        const p = Math.min(1, (t-start)/dur);
+        const eased = 1 - Math.pow(1-p, 3);
+        e.target.textContent = Math.round(eased*target);
+        if(p<1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }, { threshold: 0.5 });
+  nums.forEach(n => io.observe(n));
+})();
+
+/* =============== CHART.JS DEFAULTS =============== */
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.color = '#8C8478';
+const GRID = 'rgba(237,230,220,0.06)';
+const MALE = '#4C6B8A', MALE_L='#8FB2D4', FEMALE = '#A83442', FEMALE_L = '#E08A93', NEUTRAL = '#8C8478';
+
+/* Chart 1: reversal */
+new Chart(document.getElementById('chartReversal'), {
+  type: 'bar',
+  data: {
+    labels: ['Lore-based antagonist', 'Physical antagonist'],
+    datasets: [
+      { label:'Male', data:[STATS.loreGenderCounts.Male, STATS.physGenderCounts.Male], backgroundColor: MALE, borderRadius:6, maxBarThickness:56 },
+      { label:'Female', data:[STATS.loreGenderCounts.Female, STATS.physGenderCounts.Female], backgroundColor: FEMALE, borderRadius:6, maxBarThickness:56 },
+      { label:'Both / neutral', data:[STATS.loreGenderCounts.Neutral+STATS.loreGenderCounts.Both, STATS.physGenderCounts.Neutral+STATS.physGenderCounts.Both], backgroundColor: NEUTRAL, borderRadius:6, maxBarThickness:56 },
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{callbacks:{label:(i)=> i.dataset.label+': '+i.parsed.y+' films'}} },
+    scales:{
+      x:{ stacked:true, grid:{display:false}, ticks:{color:'#B8AFA0'} },
+      y:{ stacked:true, beginAtZero:true, max:60, grid:{color:GRID}, ticks:{color:'#8C8478'} }
     }
-  </script>
+  }
+});
+
+/* Chart 2: weapon */
+new Chart(document.getElementById('chartWeapon'), {
+  type:'bar',
+  data:{
+    labels:['Female vessels','Male vessels'],
+    datasets:[{ label:'Signature weapon', data:[STATS.weaponPctByGender.Female, STATS.weaponPctByGender.Male], backgroundColor:[FEMALE, MALE], borderRadius:8, barThickness:30 }]
+  },
+  options:{
+    indexAxis:'y', responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{callbacks:{label:(i)=> i.parsed.x+'% carry a weapon'}} },
+    scales:{
+      x:{ max:100, title:{display:true, text:'share with a signature weapon', color:'#8C8478', font:{size:11}}, grid:{color:GRID}, ticks:{color:'#8C8478', callback:v=>v+'%'} },
+      y:{ grid:{display:false}, ticks:{color:'#EDE6DC', font:{size:13}} }
+    }
+  }
+});
+
+/* Chart 3: age distribution */
+const ageBuckets = ['Child', 'Teen', 'Young Adult', 'Middle-Aged', 'Elderly', 'Other'];
+const ageCounts = { Female:Array(ageBuckets.length).fill(0), Male:Array(ageBuckets.length).fill(0) };
+function bucketAgeCategory(category){
+  const text = (category || '').toLowerCase();
+  if (text.includes('child')) return 0;
+  if (text.includes('teen')) return 1;
+  if (text.includes('young')) return 2;
+  if (text.includes('middle')) return 3;
+  if (text.includes('elder')) return 4;
+  return 5;
+}
+MOVIES.forEach(movie => {
+  if (movie.physG === 'Female') ageCounts.Female[bucketAgeCategory(movie.ageCategory)] += 1;
+  if (movie.physG === 'Male') ageCounts.Male[bucketAgeCategory(movie.ageCategory)] += 1;
+});
+new Chart(document.getElementById('chartAge'), {
+  type:'bar',
+  data:{
+    labels: ageBuckets,
+    datasets:[
+      { label:'Female', data: ageCounts.Female, backgroundColor:FEMALE_L, borderColor:FEMALE, borderWidth:1, borderRadius:6, maxBarThickness:34 },
+      { label:'Male', data: ageCounts.Male, backgroundColor:MALE_L, borderColor:MALE, borderWidth:1, borderRadius:6, maxBarThickness:34 },
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{callbacks:{label:(i)=> i.dataset.label+': '+i.parsed.y+' films'}} },
+    scales:{
+      x:{ grid:{display:false}, ticks:{color:'#B8AFA0'} },
+      y:{ beginAtZero:true, grid:{color:GRID}, ticks:{color:'#8C8478'} }
+    }
+  }
+});
+
+/* Chart 4: agency */
+const agencyCounts = { Female:{Self:0, Overridden:0}, Male:{Self:0, Overridden:0} };
+MOVIES.forEach(movie => {
+  if (movie.physG === 'Female') {
+    if (movie.selfOverridden === 'Self') agencyCounts.Female.Self += 1;
+    if (movie.selfOverridden === 'Overridden') agencyCounts.Female.Overridden += 1;
+  }
+  if (movie.physG === 'Male') {
+    if (movie.selfOverridden === 'Self') agencyCounts.Male.Self += 1;
+    if (movie.selfOverridden === 'Overridden') agencyCounts.Male.Overridden += 1;
+  }
+});
+new Chart(document.getElementById('chartAgency'), {
+  type:'bar',
+  data:{
+    labels:['Female vessels','Male vessels'],
+    datasets:[
+      { label:'Acting as self', data:[agencyCounts.Female.Self, agencyCounts.Male.Self], backgroundColor:MALE_L, borderRadius:8, maxBarThickness:34 },
+      { label:'Overridden', data:[agencyCounts.Female.Overridden, agencyCounts.Male.Overridden], backgroundColor:FEMALE_L, borderRadius:8, maxBarThickness:34 },
+    ]
+  },
+  options:{
+    indexAxis:'y', responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false} },
+    scales:{ x:{ stacked:true, grid:{color:GRID}, ticks:{color:'#8C8478'} }, y:{ stacked:true, grid:{display:false}, ticks:{color:'#EDE6DC', font:{size:13}} } }
+  }
+});
+
+/* Chart 5: trend, interactive with scrubber */
+const decLabels = STATS.byDecade.map(d=>d.decade);
+const trendChart = new Chart(document.getElementById('chartTrend'), {
+  type:'line',
+  data:{
+    labels: decLabels,
+    datasets:[
+      { label:'Lore', data: STATS.byDecade.map(d=>d.loreFemale), borderColor:MALE, backgroundColor:'rgba(76,107,138,0.12)', fill:true, tension:.35, pointRadius:4, pointBackgroundColor:MALE, pointHoverRadius:6 },
+      { label:'Physical', data: STATS.byDecade.map(d=>d.physFemale), borderColor:FEMALE, backgroundColor:'rgba(168,52,66,0.10)', fill:true, tension:.35, pointRadius:4, pointBackgroundColor:FEMALE, pointHoverRadius:6 },
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{callbacks:{label:(i)=> i.dataset.label+': '+i.parsed.y+'%'}} },
+    scales:{ y:{ min:0, max:100, grid:{color:GRID}, ticks:{color:'#8C8478', callback:v=>v+'%'} }, x:{ grid:{display:false}, ticks:{color:'#8C8478'} } }
+  }
+});
+const slider = document.getElementById('decadeSlider');
+const readout = document.getElementById('decadeReadout');
+function updateReadout(idx){
+  const d = STATS.byDecade[idx];
+  readout.innerHTML = 'Decade <b>'+d.decade+'</b> — lore female-inclusive share <span class="m">'+d.loreFemale+'%</span>, physical <span class="f">'+d.physFemale+'%</span>';
+  trendChart.data.datasets.forEach((ds,di)=>{
+    trendChart.data.datasets[di].pointRadius = decLabels.map((_,i)=> i===parseInt(idx) ? 8 : 4);
+    trendChart.data.datasets[di].pointBorderColor = decLabels.map((_,i)=> i===parseInt(idx) ? '#EDE6DC' : (di===0?MALE:FEMALE));
+    trendChart.data.datasets[di].pointBorderWidth = decLabels.map((_,i)=> i===parseInt(idx) ? 2 : 0);
+  });
+  trendChart.update();
+}
+slider.addEventListener('input', (e)=> updateReadout(e.target.value));
+updateReadout(slider.value);
+
+/* =============== EXPLORER =============== */
+const grid = document.getElementById('explorerGrid');
+let activeG = 'all', activeA = 'all';
+function renderExplorer(){
+  const rows = MOVIES.filter(m=>{
+    const gOk = activeG==='all' || m.physG===activeG;
+    const aOk = activeA==='all' || m.selfOverridden===activeA;
+    return gOk && aOk;
+  });
+  grid.innerHTML = rows.map(m=>{
+    const tagClass = m.physG==='Female' ? 'f' : m.physG==='Male' ? 'm' : 'n';
+    return '<div class="movie-card">'
+      + '<div class="m-title">'+m.title+'</div>'
+      + '<div class="m-year">'+m.year+' · '+m.tier+'</div>'
+      + '<div class="m-row"><span>Physical</span><span class="tag '+tagClass+'">'+m.physGender+'</span></div>'
+      + '<div class="m-row"><span>Status</span><span>'+m.selfOverridden+' · '+m.status+'</span></div>'
+      + '</div>';
+  }).join('');
+}
+document.getElementById('genderChips').addEventListener('click', (e)=>{
+  if(e.target.tagName!=='BUTTON') return;
+  document.querySelectorAll('#genderChips .chip').forEach(c=>c.classList.remove('active'));
+  e.target.classList.add('active'); activeG = e.target.dataset.g; renderExplorer();
+});
+document.getElementById('agencyChips').addEventListener('click', (e)=>{
+  if(e.target.tagName!=='BUTTON') return;
+  document.querySelectorAll('#agencyChips .chip').forEach(c=>c.classList.remove('active'));
+  e.target.classList.add('active'); activeA = e.target.dataset.a; renderExplorer();
+});
+renderExplorer();
+</script>
 </body>
 </html>
