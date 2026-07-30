@@ -99,6 +99,14 @@ a{ color:inherit; }
   margin-left:auto; margin-right:auto;
   font-weight:400;
 }
+.hero-badges{
+  display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:30px;
+}
+.hero-badges span{
+  padding:8px 12px; border:1px solid rgba(242,232,217,0.14); border-radius:999px;
+  font-family:var(--mono); font-size:10px; letter-spacing:0.16em; text-transform:uppercase;
+  color:var(--bone-dim); background:rgba(255,255,255,0.03);
+}
 .flip-stage{
   margin-top:64px;
   height:120px;
@@ -164,7 +172,9 @@ hr.rule{ border:none; border-top:1px solid var(--hair); margin:0; }
   padding:28px 24px 20px;
   box-shadow:0 22px 60px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.03);
   position:relative; overflow:hidden;
+  transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease;
 }
+.chart-card:hover{ transform:translateY(-3px); border-color:rgba(168,52,66,0.34); box-shadow:0 28px 70px rgba(0,0,0,0.34); }
 .chart-card::before{ content:""; position:absolute; inset:0; border-top:1px solid rgba(255,255,255,0.05); pointer-events:none; }
 .chart-card .card-title{ font-family:var(--sans); font-weight:600; font-size:15px; margin-bottom:2px; }
 .chart-card .card-sub{ color:var(--muted); font-size:13px; margin-bottom:18px; }
@@ -229,6 +239,12 @@ hr.rule{ border:none; border-top:1px solid var(--hair); margin:0; }
     <div class="eyebrow">100 supernatural horror films · 1976–2026</div>
     <h1>Borrowed<br><em>bodies</em></h1>
     <p class="hero-sub">The thing haunting you was rarely born female. The body it wears almost always is. A data study of who authors evil in supernatural horror — and who's just left holding it.</p>
+
+    <div class="hero-badges">
+      <span>possession</span>
+      <span>female vessels</span>
+      <span>haunted authorship</span>
+    </div>
 
     <div class="flip-stage" id="flipStage">
       <div class="flip-col">
@@ -496,22 +512,18 @@ const MALE = '#4C6B8A', MALE_L='#8FB2D4', FEMALE = '#A83442', FEMALE_L = '#E08A9
 
 /* Chart 1: reversal */
 new Chart(document.getElementById('chartReversal'), {
-  type: 'bar',
+  type: 'doughnut',
   data: {
-    labels: ['Lore-based antagonist', 'Physical antagonist'],
+    labels: ['Lore female-coded', 'Physical female-coded'],
     datasets: [
-      { label:'Male', data:[STATS.loreGenderCounts.Male, STATS.physGenderCounts.Male], backgroundColor: MALE, borderRadius:6, maxBarThickness:56 },
-      { label:'Female', data:[STATS.loreGenderCounts.Female, STATS.physGenderCounts.Female], backgroundColor: FEMALE, borderRadius:6, maxBarThickness:56 },
-      { label:'Both / neutral', data:[STATS.loreGenderCounts.Neutral+STATS.loreGenderCounts.Both, STATS.physGenderCounts.Neutral+STATS.physGenderCounts.Both], backgroundColor: NEUTRAL, borderRadius:6, maxBarThickness:56 },
+      { data:[STATS.loreGenderCounts.Female, 100 - STATS.loreGenderCounts.Female], backgroundColor:[FEMALE, 'rgba(255,255,255,0.06)'], borderWidth:0, cutout:'72%' },
+      { data:[STATS.physGenderCounts.Female, 100 - STATS.physGenderCounts.Female], backgroundColor:[FEMALE_L, 'rgba(255,255,255,0.04)'], borderWidth:0, cutout:'48%' }
     ]
   },
   options: {
     responsive:true, maintainAspectRatio:false,
-    plugins:{ legend:{display:false}, tooltip:{callbacks:{label:(i)=> i.dataset.label+': '+i.parsed.y+' films'}} },
-    scales:{
-      x:{ stacked:true, grid:{display:false}, ticks:{color:'#B8AFA0'} },
-      y:{ stacked:true, beginAtZero:true, max:60, grid:{color:GRID}, ticks:{color:'#8C8478'} }
-    }
+    rotation:-90 * (Math.PI / 180),
+    plugins:{ legend:{display:false}, tooltip:{callbacks:{label:(i)=> i.label+': '+i.parsed+'%'}} }
   }
 });
 
